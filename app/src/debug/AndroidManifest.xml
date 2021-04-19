@@ -20,7 +20,7 @@
     <application
         android:name="com.alphawallet.app.App"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_alpha"
         android:label="@string/app_name"
         android:testOnly="false"
         android:roundIcon="@mipmap/ic_launcher_round"
