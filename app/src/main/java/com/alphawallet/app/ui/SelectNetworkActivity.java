@@ -59,7 +59,7 @@ public class SelectNetworkActivity extends BaseActivity {
                 .get(SelectNetworkViewModel.class);
 
         if (getIntent() != null) {
-            singleItem = getIntent().getBooleanExtra(C.EXTRA_SINGLE_ITEM, false);
+            singleItem = true;//getIntent().getBooleanExtra(C.EXTRA_SINGLE_ITEM, true);
             selectedChainId = getIntent().getStringExtra(C.EXTRA_CHAIN_ID);
         }
 
@@ -99,9 +99,10 @@ public class SelectNetworkActivity extends BaseActivity {
         }
 
         for (NetworkInfo info : viewModel.getNetworkList()) {
-            if (!singleItem || activeNetworks.contains(info.chainId)) {
-                list.add(new NetworkItem(info.name, info.chainId, intList.contains(info.chainId)));
-            }
+            list.add(new NetworkItem(info.name, info.chainId, intList.contains(info.chainId)));
+//            if (!singleItem || activeNetworks.contains(info.chainId)) {
+//                list.add(new NetworkItem(info.name, info.chainId, intList.contains(info.chainId)));
+//            }
         }
 
         adapter = new CustomAdapter(list, singleItem);
@@ -138,6 +139,10 @@ public class SelectNetworkActivity extends BaseActivity {
             Intent intent = new Intent();
             intent.putExtra(C.EXTRA_CHAIN_ID, filterList[0]);
             setResult(RESULT_OK, intent);
+
+            viewModel.setFilterNetworks(filterList);
+            sendBroadcast(new Intent(C.RESET_WALLET));
+
             finish();
         } else {
             viewModel.setFilterNetworks(filterList);

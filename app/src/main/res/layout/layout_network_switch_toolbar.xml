@@ -15,7 +15,8 @@
     app:contentInsetRight="0dp"
     app:contentInsetStart="0dp"
     app:popupTheme="@style/AppTheme.PopupOverlay"
-    app:titleTextAppearance="@style/AppTheme.Toolbar.Title">
+    app:titleTextAppearance="@style/AppTheme.Toolbar.Title"
+    android:visibility="gone">
 
     <TextView
         android:id="@+id/toolbar_title"
@@ -41,8 +42,7 @@
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
         android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:visibility="visible">
+        android:paddingBottom="5dp">
 
         <View
             android:id="@+id/network_icon"
@@ -73,7 +73,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/current_network"
             android:paddingTop="5dp"
-            android:src="@drawable/ic_dropdown_caret" />
+            android:src="@drawable/ic_dropdown_caret"/>
     </RelativeLayout>
 
 

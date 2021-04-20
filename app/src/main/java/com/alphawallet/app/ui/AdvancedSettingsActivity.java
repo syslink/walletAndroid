@@ -122,16 +122,16 @@ public class AdvancedSettingsActivity extends BaseActivity {
 
     private void addSettingsToLayout() {
         LinearLayout advancedSettingsLayout = findViewById(R.id.layout);
-        advancedSettingsLayout.addView(console);
+        //advancedSettingsLayout.addView(console);
         advancedSettingsLayout.addView(clearBrowserCache);
 
-        if (!checkWritePermission() && EthereumNetworkRepository.extraChains() == null)
-            advancedSettingsLayout.addView(tokenScript);
+//        if (!checkWritePermission() && EthereumNetworkRepository.extraChains() == null)
+//            advancedSettingsLayout.addView(tokenScript);
 
         advancedSettingsLayout.addView(changeLanguage);
         advancedSettingsLayout.addView(changeCurrency);
-        advancedSettingsLayout.addView(tokenScriptManagement);
-        advancedSettingsLayout.addView(fullScreenSettings);
+//        advancedSettingsLayout.addView(tokenScriptManagement);
+//        advancedSettingsLayout.addView(fullScreenSettings);
     }
 
     private void onConsoleClicked() {

@@ -54,7 +54,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     public static native String getSecondaryInfuraKey();
 
     //Fallback nodes: these nodes are used if there's no Amberdata key, and also as a fallback in case the primary node times out while attempting a call
-    public static final String MAINNET_RPC_URL = "https://mainnet.infura.io/v3/" + getInfuraKey();
+    public static final String MAINNET_RPC_URL = "https://mainnet.infura.io/v3/35b57a95cb6e4de4a6d7c4ab63dfc0f8";// + getInfuraKey();
     public static final String RINKEBY_RPC_URL = "https://rinkeby.infura.io/v3/" + getInfuraKey();
 
     //Note that AlphaWallet now uses a double node configuration. See class AWHttpService comment 'try primary node'.
@@ -62,7 +62,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     //See the declaration of NetworkInfo - it has a member backupNodeUrl. Put your secondary node here.
 
     public static final String BACKUP_INFURA_KEY = getSecondaryInfuraKey();
-    public static final String MAINNET_FALLBACK_RPC_URL = "https://mainnet.infura.io/v3/" + getSecondaryInfuraKey();
+    public static final String MAINNET_FALLBACK_RPC_URL = "https://mainnet.infura.io/v3/35b57a95cb6e4de4a6d7c4ab63dfc0f8";// + getSecondaryInfuraKey();
     public static final String CLASSIC_RPC_URL = "https://www.ethercluster.com/etc";
     public static final String XDAI_RPC_URL = "https://rpc.xdaichain.com/";
     public static final String POA_RPC_URL = "https://core.poa.network/";
@@ -78,8 +78,8 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     public static final String ARTIS_TAU1_RPC_URL = "https://rpc.tau1.artis.network";
     public static final String BINANCE_TEST_RPC_URL = "https://data-seed-prebsc-1-s3.binance.org:8545";
     public static final String BINANCE_TEST_FALLBACK_RPC_URL = "https://data-seed-prebsc-2-s1.binance.org:8545";
-    public static final String BINANCE_MAIN_RPC_URL = "https://bsc-dataseed1.binance.org:443";
-    public static final String BINANCE_MAIN_FALLBACK_RPC_URL = "https://bsc-dataseed2.ninicoin.io:443";
+    public static final String BINANCE_MAIN_RPC_URL = "https://bsc-dataseed.binance.org/";
+    public static final String BINANCE_MAIN_FALLBACK_RPC_URL = "https://bsc-dataseed2.ninicoin.io";
     public static final String HECO_RPC_URL = "https://http-mainnet-node.huobichain.com";
     public static final String HECO_TEST_RPC_URL = "https://http-testnet.hecochain.com";
 
@@ -119,14 +119,14 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 //            new NetworkInfo(C.CLASSIC_NETWORK_NAME, C.ETC_SYMBOL,
 //                    CLASSIC_RPC_URL,
 //                    "https://blockscout.com/etc/mainnet/tx/",CLASSIC_ID, true, CLASSIC_RPC_URL, "https://blockscout.com/etc/mainnet/"),
-            new NetworkInfo(C.XDAI_NETWORK_NAME,
-                    C.xDAI_SYMBOL,
-                    XDAI_RPC_URL,
-                    "https://blockscout.com/poa/dai/tx/",
-                    XDAI_ID,
-                    false,
-                    "https://dai.poa.network",
-                    "https://blockscout.com/poa/dai/"),
+//            new NetworkInfo(C.XDAI_NETWORK_NAME,
+//                    C.xDAI_SYMBOL,
+//                    XDAI_RPC_URL,
+//                    "https://blockscout.com/poa/dai/tx/",
+//                    XDAI_ID,
+//                    false,
+//                    "https://dai.poa.network",
+//                    "https://blockscout.com/poa/dai/"),
 //            new NetworkInfo(C.POA_NETWORK_NAME, C.POA_SYMBOL,
 //                    POA_RPC_URL,
 //                    "https://blockscout.com/poa/core/tx/", POA_ID, false, POA_RPC_URL, "https://blockscout.com/poa/core/"),
@@ -440,7 +440,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
         switch (networkId)
         {
             case MAINNET_ID:
-                return "https://mainnet.infura.io/v3/" + BuildConfig.XInfuraAPI;
+                return "https://mainnet.infura.io/v3/35b57a95cb6e4de4a6d7c4ab63dfc0f8";// + BuildConfig.XInfuraAPI;
             case KOVAN_ID:
                 return "https://kovan.infura.io/v3/" + BuildConfig.XInfuraAPI;
             case ROPSTEN_ID:

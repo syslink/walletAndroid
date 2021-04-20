@@ -188,13 +188,14 @@ public class TickerService
         currentConversionRate = conversionRate;
         return Single.fromCallable(() -> {
             Long lastTxTime = 0L;
+            okhttp3.Response response = null;
             try
             {
                 Request request = new Request.Builder()
                         .url(ORACLE_ETHERSCAN_API)
                         .get()
                         .build();
-                okhttp3.Response response = httpClient.newCall(request)
+                response = httpClient.newCall(request)
                         .execute();
                 if (response.code() / 200 == 1)
                 {
@@ -212,7 +213,11 @@ public class TickerService
             }
             catch (Exception e)
             {
+//                System.out.println("Sam Error: " + e.getMessage());
                 e.printStackTrace();
+            }
+            finally {
+                response.body().close();
             }
 
             return lastTxTime;

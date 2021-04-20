@@ -219,7 +219,7 @@ public class NewSettingsFragment extends BaseFragment {
         walletSettingsLayout.addView(showSeedPhrase, walletIndex++);
         showSeedPhrase.setVisibility(View.GONE);
 
-        walletSettingsLayout.addView(walletConnectSetting, walletIndex++);
+        //walletSettingsLayout.addView(walletConnectSetting, walletIndex++);
 
         systemSettingsLayout.addView(notificationsSetting, systemIndex++);
 

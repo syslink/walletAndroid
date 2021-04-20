@@ -41,7 +41,7 @@ public class EthereumNetworkRepository extends EthereumNetworkBase
 
     public static List<Integer> addDefaultNetworks()
     {
-        return new ArrayList<>(Arrays.asList(EthereumNetworkRepository.MAINNET_ID, EthereumNetworkRepository.XDAI_ID));
+        return new ArrayList<>(Arrays.asList(EthereumNetworkRepository.MAINNET_ID));
     }
 
     public static String getNodeURLByNetworkId(int networkId) {

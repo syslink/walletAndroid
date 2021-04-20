@@ -12,7 +12,7 @@ import java.util.Locale;
 public class SharedPreferenceRepository implements PreferenceRepositoryType {
     private static final String CURRENT_ACCOUNT_ADDRESS_KEY = "current_account_address";
     private static final String DEFAULT_NETWORK_NAME_KEY = "default_network_name";
-    private static final String NETWORK_FILTER_KEY = "network_filters";
+    public static final String NETWORK_FILTER_KEY = "network_filters";
     private static final String NOTIFICATIONS_KEY = "notifications";
     private static final String DEFAULT_SET_KEY = "default_net_set";
     private static final String LOCALE_KEY = "locale";

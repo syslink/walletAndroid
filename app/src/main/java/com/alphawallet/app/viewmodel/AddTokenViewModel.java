@@ -223,17 +223,17 @@ public class AddTokenViewModel extends BaseViewModel {
     private List<Integer> getNetworkIds()
     {
         List<Integer> networkIds = new ArrayList<>();
-        networkIds.add(primaryChainId); //test selected chain first
+        //networkIds.add(primaryChainId); //test selected chain first
         for (int chainId : tokensService.getNetworkFilters())
         {
             if (!networkIds.contains(chainId)) networkIds.add(chainId);
         }
 
         //Now scan unselected networks
-        for (NetworkInfo networkInfo : ethereumNetworkRepository.getAvailableNetworkList())
-        {
-            if (!networkIds.contains(networkInfo.chainId)) networkIds.add(networkInfo.chainId);
-        }
+//        for (NetworkInfo networkInfo : ethereumNetworkRepository.getAvailableNetworkList())
+//        {
+//            if (!networkIds.contains(networkInfo.chainId)) networkIds.add(networkInfo.chainId);
+//        }
         return networkIds;
     }
 
@@ -257,21 +257,21 @@ public class AddTokenViewModel extends BaseViewModel {
             switchNetwork.postValue(result.chainId);
             setupToken(result.chainId, testAddress);
         }
-        else
-        {
-            //test all the other networks
-            List<Integer> networkIds = getNetworkIds();
-            networkIds.remove((Integer)result.chainId);
-            networkCount--;
-
-            scanNetworksDisposable = Observable.fromCallable(() -> networkIds)
-                    .flatMapIterable(networkId -> networkId)
-                    .filter(networkId -> !foundNetwork)
-                    .flatMap(networkId -> fetchTokensInteract.getContractResponse(testAddress, networkId, "name"))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::testNetworkResult, this::onTestError);
-        }
+//        else
+//        {
+//            //test all the other networks
+//            List<Integer> networkIds = getNetworkIds();
+//            networkIds.remove((Integer)result.chainId);
+//            networkCount--;
+//
+//            scanNetworksDisposable = Observable.fromCallable(() -> networkIds)
+//                    .flatMapIterable(networkId -> networkId)
+//                    .filter(networkId -> !foundNetwork)
+//                    .flatMap(networkId -> fetchTokensInteract.getContractResponse(testAddress, networkId, "name"))
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(this::testNetworkResult, this::onTestError);
+//        }
     }
 
     private void onTestError(Throwable throwable)

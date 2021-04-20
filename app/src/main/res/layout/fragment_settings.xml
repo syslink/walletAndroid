@@ -145,7 +145,8 @@
                 android:layout_height="50dp"
                 android:background="@color/alabaster"
                 android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:paddingRight="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -178,7 +179,7 @@
                         android:layout_marginLeft="@dimen/default_gap"
                         android:fontFamily="@font/font_regular"
                         android:textColor="@color/dove"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"/>
                 </LinearLayout>
             </RelativeLayout>
 

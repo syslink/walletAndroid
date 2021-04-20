@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
 import com.alphawallet.app.C;
 import com.alphawallet.app.R;
@@ -30,6 +31,7 @@ import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenInfo;
 import com.alphawallet.app.repository.EthereumNetworkBase;
 import com.alphawallet.app.repository.EthereumNetworkRepository;
+import com.alphawallet.app.repository.SharedPreferenceRepository;
 import com.alphawallet.app.ui.widget.entity.AddressReadyCallback;
 import com.alphawallet.app.ui.zxing.FullScannerFragment;
 import com.alphawallet.app.ui.zxing.QRScanningActivity;
@@ -46,6 +48,7 @@ import com.alphawallet.token.tools.ParseMagicLink;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,6 +95,7 @@ public class AddTokenActivity extends BaseActivity implements AddressReadyCallba
     private boolean zeroBalanceToken = false;
 
     private AWalletAlertDialog aDialog;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,6 +106,8 @@ public class AddTokenActivity extends BaseActivity implements AddressReadyCallba
         setContentView(R.layout.activity_add_token);
 
         toolbar();
+
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
 
         symbolInputView = findViewById(R.id.input_symbol);
         decimalsInputView = findViewById(R.id.input_decimal);
@@ -166,8 +172,9 @@ public class AddTokenActivity extends BaseActivity implements AddressReadyCallba
         });
 
         setTitle(R.string.empty);
-
-        setupNetwork(EthereumNetworkRepository.getOverrideToken().chainId);
+        String networkIdStr = PreferenceManager.getDefaultSharedPreferences(this).getString(SharedPreferenceRepository.NETWORK_FILTER_KEY, "");
+        int networkId = Integer.parseInt(networkIdStr);
+        setupNetwork(networkId);
         viewModel.prepare();
     }
 

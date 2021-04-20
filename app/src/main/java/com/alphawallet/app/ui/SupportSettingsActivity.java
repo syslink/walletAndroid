@@ -93,7 +93,7 @@ public class SupportSettingsActivity extends BaseActivity {
         if (MediaLinks.AWALLET_BLOG_URL != null) {
             supportSettingsLayout.addView(blog);
         }
-        supportSettingsLayout.addView(faq);
+        //supportSettingsLayout.addView(faq);
     }
 
     private void onTelegramClicked() {
