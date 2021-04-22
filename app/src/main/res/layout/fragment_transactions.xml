@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,18 +15,282 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:layout_marginBottom="?actionBarSize"
-        android:background="@color/alabaster">
+        android:background="@color/alabaster"
+        android:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <com.alphawallet.app.widget.SystemView
-        android:id="@+id/system_view"
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/rl_root_no_activities"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
-        tools:visibility="gone" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/no_activities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="72dp"
+            android:layout_marginEnd="72dp"
+            android:src="@drawable/ic_icons_no_transactions" />
+
+        <TextView
+            android:id="@+id/no_activity_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/no_activities"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/already_label_margin_top"
+            android:text="@string/no_transactions_yet"
+            android:textColor="@color/text_dark_gray"
+            android:textSize="@dimen/sp20" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_root_deal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/normal_margin"
+        android:padding="@dimen/big_margin"
+        android:background="@drawable/background_radius">
+
+        <LinearLayout
+            android:id="@+id/ll_deal_left"
+            android:layout_marginLeft="@dimen/dp16"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_height="@dimen/half_large_margin">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_token_eth"/>
+            <TextView
+                android:layout_marginLeft="@dimen/small_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/small_margin"
+                android:text="ETH"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+            <ImageView
+                android:layout_width="@dimen/dp16"
+                android:layout_height="@dimen/dp16"
+                android:src="@drawable/ic_arrow_drop_down_black_12dp"
+                android:layout_marginLeft="@dimen/small_margin"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_deal_right"
+            android:layout_marginRight="@dimen/dp16"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/half_large_margin"
+            android:gravity="center_vertical"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_token_eth"/>
+
+            <TextView
+                android:layout_marginLeft="@dimen/small_margin"
+                android:layout_marginRight="@dimen/small_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="@dimen/small_margin"
+                android:text="USDT"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="@dimen/dp16"
+                android:layout_height="@dimen/dp16"
+                android:src="@drawable/ic_arrow_drop_down_black_12dp"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/rl_divided"
+            android:layout_below="@+id/ll_deal_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_centerVertical="true"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/greydd"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_compare_arrows_black_24dp"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/ll_root_input"
+            android:padding="@dimen/dp5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_divided">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/full_large_margin"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3">
+                    <ImageView
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/dp20"
+                        android:layout_height="@dimen/dp20"
+                        android:src="@drawable/src_lib_eui_icon_profilewallet"/>
+                    <TextView
+                        android:layout_marginLeft="@dimen/dp10"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp14"
+                        android:textColor="@color/grey75"
+                        android:text="0.0000"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="5">
+                    <EditText
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:hint="转出数量"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/full_large_margin"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3">
+                    <ImageView
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="@dimen/dp20"
+                        android:layout_height="@dimen/dp20"
+                        android:src="@drawable/src_lib_eui_icon_profilewallet"/>
+                    <TextView
+                        android:layout_marginLeft="@dimen/dp10"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp14"
+                        android:textColor="@color/grey75"
+                        android:text="0.0000"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="5">
+                    <EditText
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:hint="收到数量"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <View
+            android:id="@+id/view_divided"
+            android:layout_below="@+id/ll_root_input"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/greydd"/>
+        <LinearLayout
+            android:id="@+id/ll_desc"
+            android:layout_marginTop="@dimen/dp5"
+            android:layout_below="@+id/view_divided"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp8"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textSize="@dimen/sp14"
+                    android:layout_marginRight="@dimen/dp20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/greyfivef"
+                    android:text="汇率"/>
+                <TextView
+                    android:textSize="@dimen/sp14"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/greyfivef"
+                    android:text="1 USDT = 0.00039018 ETH"/>
+                <ImageView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/item_artis_sigma1_circle"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_marginRight="@dimen/dp20"
+                    android:textSize="@dimen/sp14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/greyfivef"
+                    android:text="手续费"/>
+                <TextView
+                    android:textSize="@dimen/sp14"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/greyfivef"
+                    android:text="0.3%"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="@dimen/dp8"
+            android:layout_below="@+id/ll_desc"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/full_large_margin">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_setting"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_blue_radius"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp30"
+                android:text="立即兑换"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -117,4 +117,16 @@
         <item name="android:paddingBottom">@dimen/big_padding</item>
     </style>
 
+    <style name="CommonDialogAnimStyle">
+        <item name="android:windowEnterAnimation">@anim/common_dialog_in_anim</item>
+        <item name="android:windowExitAnimation">@anim/common_dialog_out_anim</item>
+    </style>
+
+    <style name="DialogFullScreen">
+        <item name="android:backgroundDimEnabled">true</item><!--半透明-->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:radius">20dp</item>
+        <item name="android:windowBackground">@color/transparent</item><!--除去背景色-->
+    </style>
+
 </resources>
