@@ -206,6 +206,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'
+
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
 }
 
 // WARNING WARNING WARNING
