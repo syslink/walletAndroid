@@ -9,12 +9,10 @@ import com.alphawallet.app.entity.ContractType;
 import com.alphawallet.app.entity.EtherscanTransaction;
 import com.alphawallet.app.entity.NetworkInfo;
 import com.alphawallet.app.entity.Transaction;
-import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenFactory;
 import com.alphawallet.app.entity.tokens.TokenInfo;
 import com.alphawallet.app.entity.tokens.TokenTicker;
-import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokenLocalSource;
 import com.alphawallet.app.repository.TokenRepository;
 import com.alphawallet.token.entity.EthereumReadBuffer;
@@ -62,14 +60,10 @@ import okhttp3.Request;
 
 import static com.alphawallet.app.entity.tokenscript.TokenscriptFunction.ZERO_ADDRESS;
 import static com.alphawallet.app.repository.EthereumNetworkBase.ARTIS_SIGMA1_ID;
-import static com.alphawallet.app.repository.EthereumNetworkBase.ARTIS_TAU1_ID;
 import static com.alphawallet.app.repository.EthereumNetworkRepository.CLASSIC_ID;
-import static com.alphawallet.app.repository.EthereumNetworkRepository.GOERLI_ID;
-import static com.alphawallet.app.repository.EthereumNetworkRepository.KOVAN_ID;
 import static com.alphawallet.app.repository.EthereumNetworkRepository.MAINNET_ID;
 import static com.alphawallet.app.repository.EthereumNetworkRepository.POA_ID;
 import static com.alphawallet.app.repository.EthereumNetworkRepository.RINKEBY_ID;
-import static com.alphawallet.app.repository.EthereumNetworkRepository.ROPSTEN_ID;
 import static com.alphawallet.app.repository.EthereumNetworkRepository.XDAI_ID;
 import static org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction;
 

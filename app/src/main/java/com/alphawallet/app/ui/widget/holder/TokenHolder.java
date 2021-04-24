@@ -13,10 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import com.alphawallet.app.R;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
@@ -34,6 +30,9 @@ import com.alphawallet.app.widget.TokenIcon;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -68,6 +67,9 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
 
     public Token token;
     private OnTokenClickListener onTokenClickListener;
+    private final TextView mItemType;
+    private final TextView mCurrentHoldCurrency;
+    private final TextView mCurrentHoldCurrencyExchange;
 
     public TokenHolder(ViewGroup parent, AssetDefinitionService assetService, TokensService tSvs, Realm r)
     {
@@ -91,6 +93,10 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
         assetDefinition = assetService;
         tokensService = tSvs;
         realm = r;
+
+        mItemType = findViewById(R.id.tv_item_type);
+        mCurrentHoldCurrency = findViewById(R.id.tv_hold_currency);
+        mCurrentHoldCurrencyExchange = findViewById(R.id.tv_hold_currency_exchange);
     }
 
     @Override
@@ -124,6 +130,10 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
             //setup name and value (put these together on a single string to make wrap-around text appear better).
             String nameValue = token.getStringBalance() + " " + token.getFullName(assetDefinition, token.getTicketCount());
             balanceEth.setText(nameValue);
+            mItemType.setText(token.getSymbol());
+            mCurrentHoldCurrency.setText(token.getStringBalance());
+            //can not get exchange rate
+            mCurrentHoldCurrencyExchange.setText(" ~ ");
 
             primaryElement = false;
 
@@ -209,6 +219,7 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
 
     private void fillEmpty() {
         balanceEth.setText(R.string.NA);
+        mItemType.setText(R.string.NA);
         balanceCurrency.setText(EMPTY_BALANCE);
     }
 

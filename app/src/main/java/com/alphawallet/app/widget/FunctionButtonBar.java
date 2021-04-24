@@ -21,9 +21,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import com.alphawallet.app.BuildConfig;
 import com.alphawallet.app.C;
 import com.alphawallet.app.R;
@@ -52,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 

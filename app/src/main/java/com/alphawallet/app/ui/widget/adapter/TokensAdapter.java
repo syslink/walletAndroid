@@ -1,10 +1,6 @@
 package com.alphawallet.app.ui.widget.adapter;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.SortedList;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.alphawallet.app.R;
@@ -30,12 +26,13 @@ import com.alphawallet.app.ui.widget.holder.TokenHolder;
 import com.alphawallet.app.ui.widget.holder.TotalBalanceHolder;
 import com.alphawallet.app.ui.widget.holder.WarningHolder;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SortedList;
 import io.realm.Realm;
 
 public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {

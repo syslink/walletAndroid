@@ -28,8 +28,6 @@ import com.alphawallet.app.ui.widget.entity.ItemClickListener;
 import com.alphawallet.app.ui.zxing.QRScanningActivity;
 import com.alphawallet.app.util.KeyboardUtils;
 
-import io.reactivex.Single;
-
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static org.web3j.crypto.WalletUtils.isValidAddress;
 

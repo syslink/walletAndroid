@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/shape_picker_title_bg"
     android:orientation="vertical">
 
 
@@ -9,13 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/dp15"
-        android:background="@color/greyf6"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_picker_title_bg">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -27,6 +26,7 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:hint="输入Token名称"
+                    android:textColorHint="#939fa6"
                     android:background="@drawable/shape_white_radius"
                     android:id="@+id/et_search"/>
                 <TextView
@@ -34,9 +34,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp18"
-                    android:textColor="@color/holo_blue"
+                    android:textColor="#198ad3"
                     android:text="取消"
-                    android:textFontWeight="@integer/google_play_services_version"
                     android:layout_marginLeft="@dimen/dp10"
                     android:layout_marginRight="@dimen/dp10"/>
             </LinearLayout>
@@ -48,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="推荐"
-            android:textSize="@dimen/sp18"/>
+            android:textSize="16sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,7 +62,7 @@
         <RelativeLayout
             android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
-            android:layout_marginBottom="@dimen/dp10"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -71,7 +70,7 @@
                 android:layout_marginTop="@dimen/dp20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp18"
+                android:textSize="16sp"
                 android:text="全部代币"/>
             <TextView
                 android:layout_marginRight="@dimen/dp5"
@@ -79,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/img_sort"
                 android:layout_centerVertical="true"
-                android:textSize="@dimen/sp18"
+                android:textSize="16sp"
                 android:text="最近交易"/>
             <ImageView
                 android:id="@+id/img_sort"
@@ -93,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/dp20"
-            android:background="@drawable/shape_white_radius">
+            android:background="@drawable/shape_white_radius_divided">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

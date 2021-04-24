@@ -1,12 +1,9 @@
 package com.alphawallet.app.ui;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.SharedPreferences;
 
 import com.alphawallet.app.C;
 import com.alphawallet.app.R;
@@ -48,12 +44,13 @@ import com.alphawallet.token.tools.ParseMagicLink;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import dagger.android.AndroidInjection;
 
 import static com.alphawallet.app.C.ADDED_TOKEN;
