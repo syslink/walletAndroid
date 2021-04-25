@@ -9,15 +9,15 @@ import java.util.Arrays;
 public class CurrencyRepository implements CurrencyRepositoryType {
     public static final CurrencyItem[] CURRENCIES = {
             new CurrencyItem("USD", "American Dollar", "$", R.drawable.ic_flags_usa),
-            new CurrencyItem("EUR", "Euro", "€", R.drawable.ic_flags_euro),
-            new CurrencyItem("GBP", "British Pound", "£", R.drawable.ic_flags_uk),
-            new CurrencyItem("AUD", "Australian Dollar", "$", R.drawable.ic_flags_australia),
+//            new CurrencyItem("EUR", "Euro", "€", R.drawable.ic_flags_euro),
+//            new CurrencyItem("GBP", "British Pound", "£", R.drawable.ic_flags_uk),
+//            new CurrencyItem("AUD", "Australian Dollar", "$", R.drawable.ic_flags_australia),
             new CurrencyItem("CNY", "China Yuan Renminbi","¥", R.drawable.ic_flags_china),
-            new CurrencyItem("INR", "Indian Rupee","₹", R.drawable.ic_flags_india),
-            new CurrencyItem("SGD", "Singapore Dollar","$", R.drawable.ic_flag_sgd),
-            new CurrencyItem("JPY", "Japanese Yen","¥", R.drawable.ic_flags_japan),
-            new CurrencyItem("KRW", "Korean Won","₩", R.drawable.ic_flags_korea),
-            new CurrencyItem("RUB", "Russian Ruble","₽", R.drawable.ic_flags_russia)
+//            new CurrencyItem("INR", "Indian Rupee","₹", R.drawable.ic_flags_india),
+//            new CurrencyItem("SGD", "Singapore Dollar","$", R.drawable.ic_flag_sgd),
+//            new CurrencyItem("JPY", "Japanese Yen","¥", R.drawable.ic_flags_japan),
+//            new CurrencyItem("KRW", "Korean Won","₩", R.drawable.ic_flags_korea),
+//            new CurrencyItem("RUB", "Russian Ruble","₽", R.drawable.ic_flags_russia)
     };
 
     private final PreferenceRepositoryType preferences;
