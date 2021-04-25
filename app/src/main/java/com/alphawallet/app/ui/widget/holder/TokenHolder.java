@@ -23,6 +23,7 @@ import com.alphawallet.app.repository.entity.RealmTokenTicker;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.TickerService;
 import com.alphawallet.app.service.TokensService;
+import com.alphawallet.app.ui.WalletFragment;
 import com.alphawallet.app.ui.widget.OnTokenClickListener;
 import com.alphawallet.app.widget.ChainName;
 import com.alphawallet.app.widget.TokenIcon;
@@ -33,6 +34,7 @@ import java.math.RoundingMode;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -70,10 +72,12 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
     private final TextView mItemType;
     private final TextView mCurrentHoldCurrency;
     private final TextView mCurrentHoldCurrencyExchange;
+    private Fragment mFragment;
 
-    public TokenHolder(ViewGroup parent, AssetDefinitionService assetService, TokensService tSvs, Realm r)
+    public TokenHolder(ViewGroup parent, AssetDefinitionService assetService, TokensService tSvs, Realm r, Fragment fragment)
     {
         super(R.layout.item_token, parent);
+        mFragment = fragment;
 
         tokenIcon = findViewById(R.id.token_icon);
         balanceEth = findViewById(R.id.eth_data);
@@ -133,7 +137,11 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
             mItemType.setText(token.getSymbol());
             mCurrentHoldCurrency.setText(token.getStringBalance());
             //can not get exchange rate
-            mCurrentHoldCurrencyExchange.setText(" ~ ");
+            if (mFragment != null && mFragment instanceof WalletFragment){
+                ((WalletFragment) mFragment).getCurrentCoinExchange("binance-smart-chain",token.getAddress());
+            }else {
+                mCurrentHoldCurrencyExchange.setText(" ~ ");
+            }
 
             primaryElement = false;
 

@@ -8,11 +8,12 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.alphawallet.app.R;
+
+import androidx.core.content.ContextCompat;
 
 public class ViewFinderView extends View implements IViewFinder {
     private static final String TAG = "ViewFinderView";

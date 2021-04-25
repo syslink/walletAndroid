@@ -10,6 +10,7 @@ import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.TokensService;
+import com.alphawallet.app.ui.WalletFragment;
 import com.alphawallet.app.ui.widget.OnTokenClickListener;
 import com.alphawallet.app.ui.widget.entity.ManageTokensData;
 import com.alphawallet.app.ui.widget.entity.ManageTokensSortedItem;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 import io.realm.Realm;
@@ -56,6 +58,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
     private boolean gridFlag;
 
     protected final OnTokenClickListener onTokenClickListener;
+    private WalletFragment mFragment;
     protected final SortedList<SortedItem> items = new SortedList<>(SortedItem.class, new SortedList.Callback<SortedItem>() {
         @Override
         public int compare(SortedItem o1, SortedItem o2) {
@@ -103,6 +106,15 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
         this.realm = tokensService.getTickerRealmInstance();
     }
 
+    public TokensAdapter(OnTokenClickListener onTokenClickListener, AssetDefinitionService aService, TokensService tService, Context context, Fragment fragment) {
+        this(onTokenClickListener, aService, tService, context);
+        if (fragment instanceof WalletFragment){
+            mFragment = (WalletFragment) fragment;
+        }else {
+            mFragment = null;
+        }
+    }
+
     protected TokensAdapter(OnTokenClickListener onTokenClickListener, AssetDefinitionService aService) {
         this.onTokenClickListener = onTokenClickListener;
         this.assetService = aService;
@@ -130,7 +142,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
         BinderViewHolder<?> holder = null;
         switch (viewType) {
             case TokenHolder.VIEW_TYPE: {
-                TokenHolder tokenHolder = new TokenHolder(parent, assetService, tokensService, realm);
+                TokenHolder tokenHolder = new TokenHolder(parent, assetService, tokensService, realm,mFragment);
                 tokenHolder.setOnTokenClickListener(onTokenClickListener);
                 holder = tokenHolder;
                 break;

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alphawallet.app.C;
 import com.alphawallet.app.R;
 import com.alphawallet.app.entity.BackupOperationType;
@@ -40,6 +42,7 @@ import com.alphawallet.app.ui.widget.holder.TokenHolder;
 import com.alphawallet.app.ui.widget.holder.WarningHolder;
 import com.alphawallet.app.util.Blockies;
 import com.alphawallet.app.util.TabUtils;
+import com.alphawallet.app.viewmodel.CoinInfoBean;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletViewModelFactory;
 import com.alphawallet.app.widget.NotificationView;
@@ -48,9 +51,13 @@ import com.alphawallet.app.widget.SystemView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -65,8 +72,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import dagger.android.support.AndroidSupportInjection;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.alphawallet.app.C.ErrorCode.EMPTY_COLLECTION;
 import static com.alphawallet.app.C.Key.WALLET;
@@ -106,6 +122,8 @@ public class WalletFragment extends BaseFragment implements
     private Realm realm;
     private RealmResults<RealmToken> realmUpdates;
     private String realmId;
+    private Map<String, CoinInfoBean> mHecoMap;
+    private Map<String, CoinInfoBean> mBscMap;
 
     @Nullable
     @Override
@@ -123,6 +141,8 @@ public class WalletFragment extends BaseFragment implements
 
         initViews(view);
 
+        initCoinList();
+
         initViewModel();
 
         isVisible = true;
@@ -138,8 +158,58 @@ public class WalletFragment extends BaseFragment implements
         return view;
     }
 
+    private void initCoinList() {
+        Observable
+                .create(new ObservableOnSubscribe<Response>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<Response> emitter) throws Exception {
+                        Request request = new Request.Builder()
+                                .url("https://api.coingecko.com/api/v3/coins/list?include_platform=true")
+                                .get()
+                                .build();
+                        emitter.onNext(new OkHttpClient().newCall(request).execute());
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response>() {
+                    @Override
+                    public void accept(Response response) throws Exception {
+                        String result = response.body().string();
+                        Log.d(TAG, "accept: result = "+result);
+                        List<CoinInfoBean> coinInfoBeans = JSONObject.parseArray(result, CoinInfoBean.class);
+                        mHecoMap = new HashMap<>();
+                        mBscMap = new HashMap<>();
+                        for (CoinInfoBean bean : coinInfoBeans) {
+                            if (bean.getPlatforms().getHuobitoken() != null){
+                                mHecoMap.put(bean.getPlatforms().getHuobitoken(), bean);
+                                Log.d(TAG, "accept: heco = "+bean.toString()+"\n");
+                            }
+                            if (bean.getPlatforms().getBinancesmartchain() != null){
+                                mBscMap.put(bean.getPlatforms().getBinancesmartchain(), bean);
+                                Log.d(TAG, "accept: bsc = "+bean.toString()+"\n");
+                            }
+
+                        }
+                    }
+                });
+
+    }
+
+    @NotNull
+    private ObservableOnSubscribe<Response> getSource() {
+        return emitter -> {
+            Request request = new Request.Builder()
+                    .url("https://api.coingecko.com/api/v3/coins/list?include_platform=true")
+                    .get()
+                    .build();
+            Response execute = new OkHttpClient().newCall(request).execute();
+            emitter.onNext(execute);
+        };
+    }
+
     private void initList() {
-        adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(), getContext());
+        adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(), getContext(),this);
         adapter.setHasStableIds(true);
         setLinearLayoutManager(TAB_ALL);
         recyclerView.setAdapter(adapter);
@@ -566,6 +636,31 @@ public class WalletFragment extends BaseFragment implements
     public void setImportFilename(String fName)
     {
         importFileName = fName;
+    }
+
+    public void getCurrentCoinExchange(String coinType,String address) {
+        Log.d(TAG, "getCurrentCoinExchange: address = " + address);
+        if (coinType.equals("huobi-token")){
+            if (mHecoMap.get(address) != null) {
+                CoinInfoBean bean = mHecoMap.get(address);
+                if (bean != null){
+                    Log.d(TAG, "getCurrentCoinExchange: id = "+bean.getId()+", Name = "+bean.getName()+" ,Symbol = "+bean.getSymbol());
+                }else {
+                    Log.d(TAG, "getCurrentCoinExchange: hecoBean = null");
+                }
+
+            }
+        }else {
+            if (mBscMap.get(address) != null) {
+                CoinInfoBean bean = mBscMap.get(address);
+                if(bean != null){
+                    Log.d(TAG, "getCurrentCoinExchange: id = "+bean.getId()+", Name = "+bean.getName()+" ,Symbol = "+bean.getSymbol());
+                }else {
+                    Log.d(TAG, "getCurrentCoinExchange: BscBean = null");
+                }
+
+            }
+        }
     }
 
     public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
