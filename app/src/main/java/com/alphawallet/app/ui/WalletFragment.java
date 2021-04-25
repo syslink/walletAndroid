@@ -124,6 +124,7 @@ public class WalletFragment extends BaseFragment implements
     private String realmId;
     private Map<String, CoinInfoBean> mHecoMap;
     private Map<String, CoinInfoBean> mBscMap;
+    private List<CoinInfoBean> mCoinInfoBeans;
 
     @Nullable
     @Override
@@ -177,10 +178,10 @@ public class WalletFragment extends BaseFragment implements
                     public void accept(Response response) throws Exception {
                         String result = response.body().string();
                         Log.d(TAG, "accept: result = "+result);
-                        List<CoinInfoBean> coinInfoBeans = JSONObject.parseArray(result, CoinInfoBean.class);
+                        mCoinInfoBeans = JSONObject.parseArray(result, CoinInfoBean.class);
                         mHecoMap = new HashMap<>();
                         mBscMap = new HashMap<>();
-                        for (CoinInfoBean bean : coinInfoBeans) {
+                        for (CoinInfoBean bean : mCoinInfoBeans) {
                             if (bean.getPlatforms().getHuobitoken() != null){
                                 mHecoMap.put(bean.getPlatforms().getHuobitoken(), bean);
                                 Log.d(TAG, "accept: heco = "+bean.toString()+"\n");
@@ -638,9 +639,14 @@ public class WalletFragment extends BaseFragment implements
         importFileName = fName;
     }
 
-    public void getCurrentCoinExchange(String coinType,String address) {
-        Log.d(TAG, "getCurrentCoinExchange: address = " + address);
-        if (coinType.equals("huobi-token")){
+    public void getCurrentCoinExchange(String name,String symbol) {
+        Log.d(TAG, "getCurrentCoinExchange: name = " + name+", symbol = "+symbol);
+        for (CoinInfoBean bean : mCoinInfoBeans) {
+            if (bean.getName().equals(name) && bean.getSymbol().equals(symbol)){
+                Log.d(TAG, "getCurrentCoinExchange: coin id = "+bean.getId());
+            }
+        }
+        /*if (coinType.equals("huobi-token")){
             if (mHecoMap.get(address) != null) {
                 CoinInfoBean bean = mHecoMap.get(address);
                 if (bean != null){
@@ -660,7 +666,7 @@ public class WalletFragment extends BaseFragment implements
                 }
 
             }
-        }
+        }*/
     }
 
     public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
