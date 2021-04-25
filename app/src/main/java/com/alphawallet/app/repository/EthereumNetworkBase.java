@@ -103,13 +103,13 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 
     final NetworkInfo[] NETWORKS;
     static final NetworkInfo[] DEFAULT_NETWORKS = new NetworkInfo[] {
-            new NetworkInfo(C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
-                    MAINNET_RPC_URL,
-                    "https://cn.etherscan.com/tx/",MAINNET_ID, true,
-                    MAINNET_FALLBACK_RPC_URL,
-                    "https://api-cn.etherscan.com/"),
+//            new NetworkInfo(C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
+//                    MAINNET_RPC_URL,
+//                    "https://cn.etherscan.com/tx/",MAINNET_ID, true,
+//                    MAINNET_FALLBACK_RPC_URL,
+//                    "https://api-cn.etherscan.com/"),
             new NetworkInfo(C.BINANCE_MAIN_NETWORK, C.BINANCE_SYMBOL, BINANCE_MAIN_RPC_URL,
-                    "https://bscscan.com/tx/", BINANCE_MAIN_ID, false,
+                    "https://bscscan.com/tx/", BINANCE_MAIN_ID, true,
                     BINANCE_MAIN_FALLBACK_RPC_URL,
                     "https://api.bscscan.com/"),
             new NetworkInfo(C.HECO_MAIN_NETWORK, C.HECO_SYMBOL, HECO_RPC_URL,

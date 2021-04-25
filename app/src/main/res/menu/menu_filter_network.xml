@@ -8,6 +8,7 @@
         android:icon="@drawable/ic_network_2"
         android:orderInCategory="20"
         android:title="@string/select_active_networks"
+        android:visible="false"
         app:showAsAction="always"
         />
 </menu>
