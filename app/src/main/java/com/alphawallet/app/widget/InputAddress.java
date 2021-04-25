@@ -49,7 +49,7 @@ public class InputAddress extends RelativeLayout implements ItemClickListener, E
     private int hintRedId;
     private boolean noCam;
     private String imeOptions;
-    private boolean handleENS = false;
+    private boolean handleENS = true;
     private final ENSHandler ensHandler;
     private AWalletAlertDialog dialog;
     private AddressReadyCallback addressReadyCallback = null;
@@ -108,7 +108,7 @@ public class InputAddress extends RelativeLayout implements ItemClickListener, E
         {
             labelResId = a.getResourceId(R.styleable.InputView_label, R.string.empty);
             hintRedId = a.getResourceId(R.styleable.InputView_hint, R.string.empty);
-            handleENS = a.getBoolean(R.styleable.InputView_ens, false);
+            //handleENS = a.getBoolean(R.styleable.InputView_ens, false);
             imeOptions = a.getString(R.styleable.InputView_imeOptions);
             noCam = a.getBoolean(R.styleable.InputView_nocam, false);
             boolean showHeader = a.getBoolean(R.styleable.InputView_show_header, true);
