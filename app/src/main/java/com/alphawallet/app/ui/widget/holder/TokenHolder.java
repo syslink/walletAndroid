@@ -138,7 +138,7 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
             mCurrentHoldCurrency.setText(token.getStringBalance());
             //can not get exchange rate
             if (mFragment != null && mFragment instanceof WalletFragment){
-                ((WalletFragment) mFragment).getCurrentCoinExchange(token.getTokenTitle(),token.getSymbol());
+                ((WalletFragment) mFragment).getCurrentCoinExchange(token.getTokenTitle().split(" ")[0].toUpperCase(), token.getSymbol());
             }else {
                 mCurrentHoldCurrencyExchange.setText(" ~ ");
             }

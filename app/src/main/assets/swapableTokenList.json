@@ -1,0 +1,30 @@
+{
+  "heco": {
+    "headList": [
+      {
+        "name": "mdx",
+        "address": "0x25d2e80cb6b86881fd7e07dd263fb79f4abe033c"
+      }
+    ],
+    "commonList": [
+      {
+        "name": "can",
+        "address": "0x1e6395e6b059fc97a4dda925b6c5ebf19e05c69f"
+      }
+    ]
+  },
+  "bsc": {
+    "headList": [
+      {
+        "name": "wbnb",
+        "address": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"
+      }
+    ],
+    "commonList": [
+      {
+        "name": "ada",
+        "address": "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47"
+      }
+    ]
+  }
+}

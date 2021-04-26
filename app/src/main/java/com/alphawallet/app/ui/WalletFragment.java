@@ -642,7 +642,7 @@ public class WalletFragment extends BaseFragment implements
     public void getCurrentCoinExchange(String name,String symbol) {
         Log.d(TAG, "getCurrentCoinExchange: name = " + name+", symbol = "+symbol);
         for (CoinInfoBean bean : mCoinInfoBeans) {
-            if (bean.getName().equals(name) && bean.getSymbol().equals(symbol)){
+            if (bean.getName().toUpperCase().equals(name) && bean.getSymbol().toUpperCase().equals(symbol)){
                 Log.d(TAG, "getCurrentCoinExchange: coin id = "+bean.getId());
             }
         }
