@@ -1,5 +1,6 @@
 {
   "heco": {
+    "routerContract": "0x....",
     "headList": [
       {
         "name": "mdx",
@@ -14,6 +15,7 @@
     ]
   },
   "bsc": {
+    "routerContract": "0x....",
     "headList": [
       {
         "name": "wbnb",
