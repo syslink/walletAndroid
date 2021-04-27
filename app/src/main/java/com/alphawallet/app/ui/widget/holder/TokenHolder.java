@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -44,6 +45,7 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
 
     public static final int VIEW_TYPE = 1005;
     public static final String EMPTY_BALANCE = "\u2014\u2014";
+    private static final String TAG = "TokenHolder";
 
     private final TokenIcon tokenIcon;
     private final TextView balanceEth;
@@ -72,12 +74,11 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
     private final TextView mItemType;
     private final TextView mCurrentHoldCurrency;
     private final TextView mCurrentHoldCurrencyExchange;
-    private Fragment mFragment;
 
-    public TokenHolder(ViewGroup parent, AssetDefinitionService assetService, TokensService tSvs, Realm r, Fragment fragment)
+    public TokenHolder(ViewGroup parent, AssetDefinitionService assetService, TokensService tSvs, Realm r)
     {
         super(R.layout.item_token, parent);
-        mFragment = fragment;
+
 
         tokenIcon = findViewById(R.id.token_icon);
         balanceEth = findViewById(R.id.eth_data);
@@ -137,11 +138,8 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
             mItemType.setText(token.getSymbol());
             mCurrentHoldCurrency.setText(token.getStringBalance());
             //can not get exchange rate
-            if (mFragment != null && mFragment instanceof WalletFragment){
-                ((WalletFragment) mFragment).getCurrentCoinExchange(token.getTokenTitle().split(" ")[0].toUpperCase(), token.getSymbol());
-            }else {
-                mCurrentHoldCurrencyExchange.setText(" ~ ");
-            }
+            mCurrentHoldCurrencyExchange.setText(data.getCny());
+
 
             primaryElement = false;
 

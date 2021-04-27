@@ -24,10 +24,29 @@ public class TokenCardMeta implements Comparable<TokenCardMeta>, Parcelable
     public final int nameWeight;
     public final ContractType type;
     public final String balance;
+    public String usd;
+    public String cny;
+
+
+    public String getUsd() {
+        return usd;
+    }
+
+    public void setUsd(String usd) {
+        this.usd = usd;
+    }
+
+    public String getCny() {
+        return cny;
+    }
+
+    public void setCny(String cny) {
+        this.cny = cny;
+    }
 
     /*
-    Initial value is False as Token considered to be Hidden
-     */
+            Initial value is False as Token considered to be Hidden
+             */
     public boolean isEnabled = false;
 
     public TokenCardMeta(int chainId, String tokenAddress, String balance, long timeStamp, AssetDefinitionService svs, String name, String symbol, ContractType type)

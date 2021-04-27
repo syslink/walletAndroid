@@ -728,6 +728,7 @@ public class TokensRealmSource implements TokenLocalSource {
 
                 for (RealmToken t : realmItems)
                 {
+                    Log.d(TAG, "fetchTokenMetas: RealmToken = "+t.toString());
                     if (networkFilters.size() > 0 && !networkFilters.contains(t.getChainId()) || !t.getEnabled()) continue;
                     String balance = convertStringBalance(t.getBalance(), t.getContractType());
 

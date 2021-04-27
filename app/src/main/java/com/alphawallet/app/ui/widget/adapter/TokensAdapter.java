@@ -1,6 +1,7 @@
 package com.alphawallet.app.ui.widget.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.alphawallet.app.R;
@@ -30,6 +31,7 @@ import com.alphawallet.app.ui.widget.holder.WarningHolder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -45,6 +47,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
     public static final int FILTER_COLLECTIBLES = 3;
     private static final BigDecimal CUTOFF_VALUE = BigDecimal.valueOf(99999999999L);
     private final Realm realm;
+    private Fragment mFragment;
 
     private int filterType;
     protected final AssetDefinitionService assetService;
@@ -58,7 +61,6 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
     private boolean gridFlag;
 
     protected final OnTokenClickListener onTokenClickListener;
-    private WalletFragment mFragment;
     protected final SortedList<SortedItem> items = new SortedList<>(SortedItem.class, new SortedList.Callback<SortedItem>() {
         @Override
         public int compare(SortedItem o1, SortedItem o2) {
@@ -72,7 +74,12 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
 
         @Override
         public boolean areContentsTheSame(SortedItem oldItem, SortedItem newItem) {
-            return oldItem.areContentsTheSame(newItem);
+            if (oldItem.value instanceof TokenCardMeta){
+                return ((TokenCardMeta) oldItem.value).getCny().equals(((TokenCardMeta) newItem.value).getCny());
+            }else {
+                return oldItem.areContentsTheSame(newItem);
+            }
+
         }
 
         @Override
@@ -105,14 +112,13 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
         this.context = context;
         this.realm = tokensService.getTickerRealmInstance();
     }
-
     public TokensAdapter(OnTokenClickListener onTokenClickListener, AssetDefinitionService aService, TokensService tService, Context context, Fragment fragment) {
-        this(onTokenClickListener, aService, tService, context);
-        if (fragment instanceof WalletFragment){
-            mFragment = (WalletFragment) fragment;
-        }else {
-            mFragment = null;
-        }
+        this.onTokenClickListener = onTokenClickListener;
+        this.assetService = aService;
+        this.tokensService = tService;
+        this.context = context;
+        this.realm = tokensService.getTickerRealmInstance();
+        this.mFragment = fragment;
     }
 
     protected TokensAdapter(OnTokenClickListener onTokenClickListener, AssetDefinitionService aService) {
@@ -128,9 +134,9 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
         if (obj instanceof TokenSortedItem) {
             TokenCardMeta tcm = ((TokenSortedItem) obj).value;
 
-             // This is an attempt to obtain a 'unique' id
-             // to fully utilise the RecyclerView's setHasStableIds feature.
-             // This will drastically reduce 'blinking' when the list changes
+            // This is an attempt to obtain a 'unique' id
+            // to fully utilise the RecyclerView's setHasStableIds feature.
+            // This will drastically reduce 'blinking' when the list changes
             return tcm.getUID();
         } else {
             return position;
@@ -142,7 +148,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
         BinderViewHolder<?> holder = null;
         switch (viewType) {
             case TokenHolder.VIEW_TYPE: {
-                TokenHolder tokenHolder = new TokenHolder(parent, assetService, tokensService, realm,mFragment);
+                TokenHolder tokenHolder = new TokenHolder(parent, assetService, tokensService, realm);
                 tokenHolder.setOnTokenClickListener(onTokenClickListener);
                 holder = tokenHolder;
                 break;
@@ -163,7 +169,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
                 holder = new AssetInstanceScriptHolder(R.layout.item_ticket, parent, null, assetService, false);
                 break;
             default:
-            // NB to save ppl a lot of effort this view doesn't show - item_total_balance has height coded to 1dp.
+                // NB to save ppl a lot of effort this view doesn't show - item_total_balance has height coded to 1dp.
             case TotalBalanceHolder.VIEW_TYPE: {
                 holder = new TotalBalanceHolder(R.layout.item_total_balance, parent);
             }
@@ -257,6 +263,13 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
             }
             else
             {
+                //TODO  是否支持切换人命币和美元功能？当前默认显示人命币汇率
+                String cny = ((WalletFragment) mFragment).getCnyByAddress(token.getAddress()).split("_")[0];
+                if (" ~ ".equals(cny)){
+                    token.setCny(cny);
+                }else {
+                    token.setCny("¥ " + cny);
+                }
                 TokenSortedItem tsi = new TokenSortedItem(TokenHolder.VIEW_TYPE, token, token.nameWeight);
                 if (debugView) tsi.debug();
                 position = items.add(tsi);

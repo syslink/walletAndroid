@@ -196,4 +196,26 @@ public class RealmToken extends RealmObject {
             setDecimals(tokenInfo.decimals);
         }
     }
+
+    @Override
+    public String toString() {
+        return "RealmToken{" +
+                "address='" + address + '\'' +
+                ", name='" + name + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", decimals=" + decimals +
+                ", addedTime=" + addedTime +
+                ", updatedTime=" + updatedTime +
+                ", lastTxTime=" + lastTxTime +
+                ", balance='" + balance + '\'' +
+                ", isEnabled=" + isEnabled +
+                ", tokenId=" + tokenId +
+                ", interfaceSpec=" + interfaceSpec +
+                ", auxData='" + auxData + '\'' +
+                ", lastBlockRead=" + lastBlockRead +
+                ", chainId=" + chainId +
+                ", earliestTxBlock=" + earliestTxBlock +
+                ", visibilityChanged=" + visibilityChanged +
+                '}';
+    }
 }
