@@ -486,12 +486,12 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 
     public static List<Integer> addDefaultNetworks()
     {
-        return new ArrayList<>(Collections.singletonList(EthereumNetworkRepository.MAINNET_ID));
+        return new ArrayList<>(Collections.singletonList(EthereumNetworkRepository.BINANCE_MAIN_ID));
     }
 
     public static ContractLocator getOverrideToken()
     {
-        return new ContractLocator("", EthereumNetworkRepository.MAINNET_ID, ContractType.ETHEREUM);
+        return new ContractLocator("", EthereumNetworkRepository.BINANCE_MAIN_ID, ContractType.ETHEREUM);
     }
 
     public static boolean isPriorityToken(Token token)
