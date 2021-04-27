@@ -24,8 +24,8 @@ public class TokenCardMeta implements Comparable<TokenCardMeta>, Parcelable
     public final int nameWeight;
     public final ContractType type;
     public final String balance;
-    public String usd;
-    public String cny;
+    public String usd = " ~ ";
+    public String cny = " ~ ";
 
 
     public String getUsd() {

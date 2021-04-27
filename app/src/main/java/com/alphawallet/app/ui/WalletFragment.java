@@ -45,6 +45,7 @@ import com.alphawallet.app.ui.widget.holder.TokenGridHolder;
 import com.alphawallet.app.ui.widget.holder.TokenHolder;
 import com.alphawallet.app.ui.widget.holder.WarningHolder;
 import com.alphawallet.app.util.Blockies;
+import com.alphawallet.app.util.CoinExchangeRateUtil;
 import com.alphawallet.app.util.TabUtils;
 import com.alphawallet.app.viewmodel.CoinInfoBean;
 import com.alphawallet.app.viewmodel.WalletViewModel;
@@ -132,7 +133,6 @@ public class WalletFragment extends BaseFragment implements
     private String realmId;
     private Map<String, String> mCoinAddressAndIdMap = new HashMap<>();
     private List<CoinInfoBean> mCoinInfoBeans;
-    OkHttpClient httpClient = new OkHttpClient();
     private Map<String, String> mExchangeMap;
 
 
@@ -180,7 +180,7 @@ public class WalletFragment extends BaseFragment implements
                             .url("https://api.coingecko.com/api/v3/coins/list?include_platform=true")
                             .build();
 
-                    emitter.onNext(httpClient.newCall(request).execute());
+                    emitter.onNext(mOkHttpClient.newCall(request).execute());
                 }
             })
                     .subscribeOn(Schedulers.io())
@@ -427,7 +427,11 @@ public class WalletFragment extends BaseFragment implements
                         mCoinAddressAndIdMap.put(address, coinIdByNameAndSymbol);
                     }
                 }
-                getExchangeRateByCoinId();
+                CoinExchangeRateUtil.getInstance()
+                        .setCoinIds(mCoinAddressAndIdMap)
+                        .setOkhttpClient(mOkHttpClient)
+                        .CheckExchangeRate();
+                //getExchangeRateByCoinId();
             }
             adapter.setTokens(tokens);
             checkScrollPosition();
@@ -436,62 +440,7 @@ public class WalletFragment extends BaseFragment implements
         systemView.showProgress(false);
     }
 
-    @SuppressLint("CheckResult")
-    private void getExchangeRateByCoinId() {
-        if (mCoinAddressAndIdMap.size() > 0){
-            String url = getParams();
 
-            //key:coin address  values:cny_usd
-            mExchangeMap = new HashMap<>();
-            Observable.create(new ObservableOnSubscribe<Response>() {
-                @Override
-                public void subscribe(ObservableEmitter<Response> emitter) throws Exception {
-                    Request request = new Request.Builder().url(url)
-                            .build();
-                    emitter.onNext(httpClient.newCall(request).execute());
-                }
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Response>() {
-                        @Override
-                        public void accept(Response response) throws Exception {
-                            String string = response.body().string();
-                            JSONObject jsonObject = JSON.parseObject(string);
-                            //mCoinAddressAndIdMap  key-->address   value-->coinId
-                            for (Map.Entry<String, String> entry : mCoinAddressAndIdMap.entrySet()) {
-                                String key = entry.getKey();
-                                String value = entry.getValue();
-                                Object obj = jsonObject.get(value);
-                                if (obj != null){
-                                    JSONObject object = JSON.parseObject(obj.toString());
-                                    if (object != null){
-                                        mExchangeMap.put(entry.getKey(), object.getString("cny") + "_" + object.getString("usd"));
-                                    }
-                                }
-
-
-                            }
-                        }
-                    });
-        }
-    }
-
-    private String getParams() {
-        StringBuilder coinIds = new StringBuilder();
-        coinIds.append("?ids=");
-        Collection<String> values = mCoinAddressAndIdMap.values();
-        for (String value : values) {
-            if (!value.isEmpty()){
-                coinIds.append(value).append(",");
-            }
-        }
-        coinIds.deleteCharAt(coinIds.length() - 1);
-        coinIds.append("&");
-        coinIds.append("vs_currencies=");
-        coinIds.append("cny,");
-        coinIds.append("usd");
-        return "https://api.coingecko.com/api/v3/simple/price" + coinIds.toString();
-    }
 
     private String getCoinIdByNameAndSymbol(String name, String symbol) {
         String id = "";
@@ -665,12 +614,7 @@ public class WalletFragment extends BaseFragment implements
         importFileName = fName;
     }
 
-    public String getCnyByAddress(String address) {
-        if (mExchangeMap != null){
-            return mExchangeMap.get(address) == null ? " ~ " : mExchangeMap.get(address);
-        }
-        return " ~ ";
-    }
+
 
     public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
         private TokensAdapter mAdapter;

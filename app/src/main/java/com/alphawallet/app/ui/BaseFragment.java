@@ -8,10 +8,13 @@ import android.widget.TextView;
 
 import com.alphawallet.app.R;
 
+import okhttp3.OkHttpClient;
+
 
 public class BaseFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
     private Toolbar toolbar;
     private TextView toolbarTitle;
+    public OkHttpClient mOkHttpClient = new OkHttpClient();
 
     private void initToolbar(View view) {
         toolbar = view.findViewById(R.id.toolbar);

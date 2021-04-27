@@ -1,5 +1,6 @@
 package com.alphawallet.app.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alphawallet.app.R;
 import com.alphawallet.app.entity.ActivityMeta;
 import com.alphawallet.app.entity.ContractLocator;
@@ -22,6 +25,7 @@ import com.alphawallet.app.repository.entity.RealmAuxData;
 import com.alphawallet.app.repository.entity.RealmTransaction;
 import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.alphawallet.app.viewmodel.ActivityViewModelFactory;
+import com.alphawallet.app.viewmodel.DealPageInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +36,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import dagger.android.support.AndroidSupportInjection;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.alphawallet.app.repository.TokensRealmSource.EVENT_CARDS;
 
@@ -64,9 +76,32 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         View view = inflater.inflate(R.layout.fragment_transactions, container, false);
         toolbar(view);
         setToolbarTitle(R.string.activity_label);
+        initDealList();
         initViewModel();
         initViews(view);
         return view;
+    }
+
+    @SuppressLint("CheckResult")
+    private void initDealList() {
+        Observable.create(new ObservableOnSubscribe<Response>() {
+            @Override
+            public void subscribe(ObservableEmitter<Response> emitter) throws Exception {
+                Request request = new Request.Builder()
+                        .url("https://doulaig.oss-cn-hangzhou.aliyuncs.com/wallet/swapableTokenList.json")
+                        .build();
+                emitter.onNext(mOkHttpClient.newCall(request).execute());
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response>() {
+                    @Override
+                    public void accept(Response response) throws Exception {
+                        String string = response.body().string();
+                        DealPageInfo dealPageInfo = JSONObject.parseObject(string, DealPageInfo.class);
+
+                    }
+                });
     }
 
     private void initViewModel() {
@@ -166,6 +201,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         mLeftTextView = view.findViewById(R.id.tv_left);
         mRightIcon = view.findViewById(R.id.img_right_icon);
         mRightTextView = view.findViewById(R.id.tv_right);
+        ((TextView) view.findViewById(R.id.toolbar_title)).setText(getResources().getString(R.string.tx_label));
         ImageView exchangeImageView = view.findViewById(R.id.img_exchange);
         exchangeImageView.setOnClickListener(this);
         TextView leftOutNumber = view.findViewById(R.id.tv_left_number);
