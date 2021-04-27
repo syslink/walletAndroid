@@ -35,6 +35,9 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+
+import org.jetbrains.annotations.NotNull;
+
 import dagger.android.support.AndroidSupportInjection;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -84,24 +87,24 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
     @SuppressLint("CheckResult")
     private void initDealList() {
-        Observable.create(new ObservableOnSubscribe<Response>() {
-            @Override
-            public void subscribe(ObservableEmitter<Response> emitter) throws Exception {
-                Request request = new Request.Builder()
-                        .url("https://doulaig.oss-cn-hangzhou.aliyuncs.com/wallet/swapableTokenList.json")
-                        .build();
-                emitter.onNext(mOkHttpClient.newCall(request).execute());
-            }
-        }).subscribeOn(Schedulers.io())
+        Observable.create(getResponseObservableOnSubscribe())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response>() {
-                    @Override
-                    public void accept(Response response) throws Exception {
-                        String string = response.body().string();
-                        DealPageInfo dealPageInfo = JSONObject.parseObject(string, DealPageInfo.class);
-
-                    }
+                .subscribe(response -> {
+                    String string = response.body().string();
+                    Log.d(TAG, "accept: 返回数据："+ string);
+                    DealPageInfo dealPageInfo = JSONObject.parseObject(string, DealPageInfo.class);
                 });
+    }
+
+    @NotNull
+    private ObservableOnSubscribe<Response> getResponseObservableOnSubscribe() {
+        return emitter -> {
+            Request request = new Request.Builder()
+                    .url("https://doulaig.oss-cn-hangzhou.aliyuncs.com/wallet/swapableTokenList.json")
+                    .build();
+            emitter.onNext(mOkHttpClient.newCall(request).execute());
+        };
     }
 
     private void initViewModel() {

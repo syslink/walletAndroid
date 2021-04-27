@@ -8,6 +8,7 @@ import com.alphawallet.app.R;
 import com.alphawallet.app.entity.ContractLocator;
 import com.alphawallet.app.entity.CustomViewSettings;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
+import com.alphawallet.app.repository.SharedPreferenceRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.TokensService;
@@ -251,12 +252,19 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
             if (gridFlag) {
                 position = items.add(new TokenSortedItem(TokenGridHolder.VIEW_TYPE, token, token.nameWeight));
             } else {
-                //TODO  是否支持切换人命币和美元功能？当前默认显示人命币汇率
-                String cny = CoinExchangeRateUtil.getInstance().getCnyByAddress(token.getAddress());
-                if (" ~ ".equals(cny)) {
-                    token.setCny(cny);
+                //美元-->USD;人命币-->CNY
+                SharedPreferenceRepository repository = new SharedPreferenceRepository(context);
+                String currency = repository.getDefaultCurrency();
+                String exchangeRate;
+                if (currency.equals("USD")){
+                    exchangeRate = CoinExchangeRateUtil.getInstance().getUsdByAddress(token.getAddress());
+                }else {
+                    exchangeRate = CoinExchangeRateUtil.getInstance().getCnyByAddress(token.getAddress());
+                }
+                if (" ~ ".equals(exchangeRate)) {
+                    token.setCny(exchangeRate);
                 } else {
-                    token.setCny("¥ " + cny);
+                    token.setCny(exchangeRate.equals("USD") ? "$ " : "¥ " + exchangeRate);
                 }
 
                 TokenSortedItem tsi = new TokenSortedItem(TokenHolder.VIEW_TYPE, token, token.nameWeight);
