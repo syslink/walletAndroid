@@ -71,8 +71,8 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     private RealmResults<RealmTransaction> realmUpdates;
     private RealmResults<RealmAuxData> auxRealmUpdates;
     public static final String BSC_TYPE = "56";
-    public static final String BSC_ICON_BASE_URL = "https://exchange.pancakeswap.finance/images/coins/";
-    public static final String HECO_ICON_BASE_URL = "https://mdex.com/token-icons/heco/";
+    public static final String BSC_ICON_BASE_URL = "https://doulaig.oss-cn-hangzhou.aliyuncs.com/wallet/bsc/";
+    public static final String HECO_ICON_BASE_URL = "https://doulaig.oss-cn-hangzhou.aliyuncs.com/wallet/heco/";
     //56 -->bsc   128-->heco
     private String mNetworkFilter;
     private List<DealPageItemBean> mHecoHeaderList;
@@ -107,13 +107,13 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         if (mIsBsc) {
             leftInfoBean = mBscHeaderList.get(0);
             rightInfoBean = mBscHeaderList.get(1);
-            leftIconUrl = BSC_ICON_BASE_URL + leftInfoBean.getAddress() + ".png";
-            rightIconUrl = BSC_ICON_BASE_URL + rightInfoBean.getAddress() + ".png";
+            leftIconUrl = BSC_ICON_BASE_URL + leftInfoBean.getAddress().toLowerCase() + ".png";
+            rightIconUrl = BSC_ICON_BASE_URL + rightInfoBean.getAddress().toLowerCase() + ".png";
         } else {
             leftInfoBean = mHecoHeaderList.get(0);
             rightInfoBean = mHecoHeaderList.get(1);
-            leftIconUrl = HECO_ICON_BASE_URL + leftInfoBean.getAddress() + ".png";
-            rightIconUrl = HECO_ICON_BASE_URL + rightInfoBean.getAddress() + ".png";
+            leftIconUrl = HECO_ICON_BASE_URL + leftInfoBean.getAddress().toLowerCase() + ".png";
+            rightIconUrl = HECO_ICON_BASE_URL + rightInfoBean.getAddress().toLowerCase() + ".png";
         }
 //        Log.d(TAG, "setData: leftIconUrl = " + leftIconUrl);
 //        Log.d(TAG, "setData: rightIconUrl = " + rightIconUrl);

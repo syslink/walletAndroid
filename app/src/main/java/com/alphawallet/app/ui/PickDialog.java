@@ -110,12 +110,11 @@ public class PickDialog extends DialogFragment implements View.OnClickListener{
             String url;
             if (getNetWortFilter().equals("56")) {
                 //bsc
-                url = ActivityFragment.BSC_ICON_BASE_URL + item.getAddress() + ".png";
+                url = ActivityFragment.BSC_ICON_BASE_URL + item.getAddress().toLowerCase() + ".png";
             }else {
                 //heco
-                url = ActivityFragment.HECO_ICON_BASE_URL + item.getAddress() + ".png";
+                url = ActivityFragment.HECO_ICON_BASE_URL + item.getAddress().toLowerCase() + ".png";
             }
-//            Log.d(TAG, "convert: url = " + url);
             Glide.with(getContext()).load(url)
                     .apply(new RequestOptions().circleCrop())
                     .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
