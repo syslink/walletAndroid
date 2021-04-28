@@ -1,6 +1,8 @@
 package com.alphawallet.app.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -38,6 +41,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +58,7 @@ import static com.alphawallet.app.repository.TokensRealmSource.EVENT_CARDS;
 /**
  * Created by JB on 26/06/2020.
  */
-public class ActivityFragment extends BaseFragment implements View.OnClickListener, Callback {
+public class ActivityFragment extends BaseFragment implements View.OnClickListener, Callback, PickDialog.onItemClickedListener, SwipeRefreshLayout.OnRefreshListener {
     @Inject
     ActivityViewModelFactory activityViewModelFactory;
     private static final String TAG = "ActivityFragment";
@@ -84,6 +88,11 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     private List<DealPageItemBean> mCurrentComList;
     private boolean mIsBsc;
     private TextView mExchangeRateText;
+    private boolean clickedLeftIcon = true;
+    private DealPageItemBean mLeftInfoBean;
+    private DealPageItemBean mRightInfoBean;
+    private SwipeRefreshLayout mRefreshLayout;
+    private boolean isLoading = true;
 
     @Nullable
     @Override
@@ -95,6 +104,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         initDealList();
         initViewModel();
         initViews(view);
+        mRefreshLayout.setRefreshing(true);
         return view;
     }
 
@@ -102,21 +112,17 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         //heco取HT和HUSD，bsc取BNB和BUSD
         String leftIconUrl;
         String rightIconUrl;
-        DealPageItemBean leftInfoBean;
-        DealPageItemBean rightInfoBean;
         if (mIsBsc) {
-            leftInfoBean = mBscHeaderList.get(0);
-            rightInfoBean = mBscHeaderList.get(1);
-            leftIconUrl = BSC_ICON_BASE_URL + leftInfoBean.getAddress().toLowerCase() + ".png";
-            rightIconUrl = BSC_ICON_BASE_URL + rightInfoBean.getAddress().toLowerCase() + ".png";
+            mLeftInfoBean = mBscHeaderList.get(0);
+            mRightInfoBean = mBscHeaderList.get(1);
+            leftIconUrl = BSC_ICON_BASE_URL + mLeftInfoBean.getAddress().toLowerCase() + ".png";
+            rightIconUrl = BSC_ICON_BASE_URL + mRightInfoBean.getAddress().toLowerCase() + ".png";
         } else {
-            leftInfoBean = mHecoHeaderList.get(0);
-            rightInfoBean = mHecoHeaderList.get(1);
-            leftIconUrl = HECO_ICON_BASE_URL + leftInfoBean.getAddress().toLowerCase() + ".png";
-            rightIconUrl = HECO_ICON_BASE_URL + rightInfoBean.getAddress().toLowerCase() + ".png";
+            mLeftInfoBean = mHecoHeaderList.get(0);
+            mRightInfoBean = mHecoHeaderList.get(1);
+            leftIconUrl = HECO_ICON_BASE_URL + mLeftInfoBean.getAddress().toLowerCase() + ".png";
+            rightIconUrl = HECO_ICON_BASE_URL + mRightInfoBean.getAddress().toLowerCase() + ".png";
         }
-//        Log.d(TAG, "setData: leftIconUrl = " + leftIconUrl);
-//        Log.d(TAG, "setData: rightIconUrl = " + rightIconUrl);
 
         Glide.with(getContext()).load(leftIconUrl)
                 .apply(new RequestOptions().circleCrop())
@@ -127,13 +133,13 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 .apply(new RequestOptions().circleCrop())
                 .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
                 .into(mRightIcon);
-        mLeftTextView.setText(leftInfoBean.getName().toUpperCase());
-        mRightTextView.setText(rightInfoBean.getName().toUpperCase());
+        mLeftTextView.setText(mLeftInfoBean.getName().toUpperCase());
+        mRightTextView.setText(mRightInfoBean.getName().toUpperCase());
 
         //1 USDT = 0.00039018 ETH
         String rate = "0.00039018";//TODO  待计算
-        String exchangeRate = "1 " + leftInfoBean.getName().toUpperCase() +
-                " = " + rate + " " + rightInfoBean.getName().toUpperCase();
+        String exchangeRate = "1 " + mLeftInfoBean.getName().toUpperCase() +
+                " = " + rate + " " + mRightInfoBean.getName().toUpperCase();
         mExchangeRateText.setText(exchangeRate);
     }
 
@@ -225,6 +231,8 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void initViews(View view) {
+        mRefreshLayout = view.findViewById(R.id.refresh);
+        mRefreshLayout.setOnRefreshListener(this);
         mRootDeal = view.findViewById(R.id.rl_root_deal);
         mRootNoActivities = view.findViewById(R.id.rl_root_no_activities);
         view.findViewById(R.id.ll_deal_left).setOnClickListener(this);
@@ -265,7 +273,11 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_deal_left:
+                clickedLeftIcon = true;
+                showCurrencyListDialog();
+                break;
             case R.id.ll_deal_right:
+                clickedLeftIcon = false;
                 showCurrencyListDialog();
                 break;
             case R.id.img_exchange:
@@ -275,17 +287,42 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 Log.d(TAG, "onClick: setting");
                 break;
             case R.id.btn_exchange:
-                Log.d(TAG, "onClick: exchange");
+
                 break;
         }
     }
 
     private void onClickExchangeImage() {
-        //mLeftIcon.get
+        DealPageItemBean temp;
+        temp = mLeftInfoBean;
+        mLeftInfoBean = mRightInfoBean;
+        mRightInfoBean = temp;
+
+        updatePage();
+    }
+
+    private void updatePage() {
+        String baseUrl = mIsBsc ? BSC_ICON_BASE_URL : HECO_ICON_BASE_URL;
+        Glide.with(getContext()).load(baseUrl + mLeftInfoBean.getAddress().toLowerCase()+".png")
+                .apply(new RequestOptions().circleCrop())
+                .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
+                .into(mLeftIcon);
+
+        Glide.with(getContext()).load(baseUrl + mRightInfoBean.getAddress().toLowerCase()+".png")
+                .apply(new RequestOptions().circleCrop())
+                .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
+                .into(mRightIcon);
+        mLeftTextView.setText(mLeftInfoBean.getName().toUpperCase());
+        mRightTextView.setText(mRightInfoBean.getName().toUpperCase());
+        //1 USDT = 0.00039018 ETH
+        String rate = "0.00039018";//TODO  待计算
+        String exchangeRate = "1 " + mLeftInfoBean.getName().toUpperCase() +
+                " = " + rate + " " + mRightInfoBean.getName().toUpperCase();
+        mExchangeRateText.setText(exchangeRate);
     }
 
     private void showCurrencyListDialog() {
-        PickDialog dialog = new PickDialog(mCurrentHeadList, mCurrentComList, mNetworkFilter);
+        PickDialog dialog = new PickDialog(mCurrentHeadList, mCurrentComList, mNetworkFilter,this);
         dialog.showNow(getActivity().getSupportFragmentManager(), "test");
     }
 
@@ -302,15 +339,18 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     }
 
     void onShow() {
-        SharedPreferenceRepository repository = new SharedPreferenceRepository(getContext());
-        mNetworkFilter = repository.getNetworkFilterList();
-        mIsBsc = mNetworkFilter.equals(BSC_TYPE);
-        initData();
+        if (!isLoading){
+            SharedPreferenceRepository repository = new SharedPreferenceRepository(getContext());
+            mNetworkFilter = repository.getNetworkFilterList();
+            mIsBsc = mNetworkFilter.equals(BSC_TYPE);
+            initData();
+        }
     }
 
     @Override
     public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+        Toast.makeText(getContext(), "Get Data Error", Toast.LENGTH_SHORT).show();
+        if (mRefreshLayout.isRefreshing()) mRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -324,6 +364,25 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         JSONObject bscObj = JSONObject.parseObject(jsonObject.getString("bsc"));
         mBscHeaderList = JSON.parseArray(bscObj.getString("headList"), DealPageItemBean.class);
         mBscComList = JSON.parseArray(bscObj.getString("commonList"), DealPageItemBean.class);
+        isLoading = false;
+        mRefreshLayout.setRefreshing(false);
+        new Handler(Looper.getMainLooper()).post(() -> onShow());
 
+    }
+
+    @Override
+    public void onItemClick(DealPageItemBean bean) {
+        if (clickedLeftIcon) {
+            mLeftInfoBean = bean;
+        }else {
+            mRightInfoBean = bean;
+        }
+        updatePage();
+    }
+
+    @Override
+    public void onRefresh() {
+        mRefreshLayout.setRefreshing(true);
+        initDealList();
     }
 }

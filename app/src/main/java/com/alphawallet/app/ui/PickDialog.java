@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.alphawallet.app.R;
 import com.alphawallet.app.viewmodel.DealPageItemBean;
@@ -26,17 +27,19 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class PickDialog extends DialogFragment implements View.OnClickListener{
+public class PickDialog extends DialogFragment implements View.OnClickListener {
     private static final String TAG = "PickDialog";
     private LinearLayoutManager mRecyclerViewLayoutManager;
     private List<DealPageItemBean> mHeaderList;
     private List<DealPageItemBean> mComList;
     private String netWortFilter;
+    private onItemClickedListener mListener;
 
-    public PickDialog(List<DealPageItemBean> headerList, List<DealPageItemBean> comList, String networkFilter) {
+    public PickDialog(List<DealPageItemBean> headerList, List<DealPageItemBean> comList, String networkFilter,onItemClickedListener listener) {
         mHeaderList = headerList;
         mComList = comList;
         this.netWortFilter = networkFilter;
+        this.mListener = listener;
     }
 
     @Override
@@ -91,10 +94,18 @@ public class PickDialog extends DialogFragment implements View.OnClickListener{
         return this.netWortFilter;
     }
 
+    private void onItemClicked(DealPageItemBean bean){
+        if (mListener != null){
+            mListener.onItemClick(bean);
+        }
+        dismiss();
+    }
+
     @Override
     public void onClick(View v) {
         dismiss();
     }
+
 
     public class MyAdapter extends BaseQuickAdapter<DealPageItemBean,BaseViewHolder>{
 
@@ -107,6 +118,7 @@ public class PickDialog extends DialogFragment implements View.OnClickListener{
         protected void convert(@NotNull BaseViewHolder helper, DealPageItemBean item) {
             helper.setText(R.id.tv_token_name, item.getName());
             ImageView view = helper.findView(R.id.src_token_icon);
+            LinearLayout rootItem = helper.getView(R.id.ll_root_item);
             String url;
             if (getNetWortFilter().equals("56")) {
                 //bsc
@@ -119,7 +131,13 @@ public class PickDialog extends DialogFragment implements View.OnClickListener{
                     .apply(new RequestOptions().circleCrop())
                     .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
                     .into(view);
+            rootItem.setOnClickListener(v -> onItemClicked(item));
         }
 
     }
+
+    public interface onItemClickedListener{
+        void onItemClick(DealPageItemBean bean);
+    }
+
 }

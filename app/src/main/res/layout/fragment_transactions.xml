@@ -52,261 +52,270 @@
             android:textSize="@dimen/sp20" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_root_deal"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/normal_margin"
-        android:padding="@dimen/big_margin"
-        android:background="@drawable/background_radius">
-
-        <LinearLayout
-            android:id="@+id/ll_deal_left"
-            android:layout_marginLeft="@dimen/dp16"
-            android:layout_alignParentLeft="true"
-            android:layout_width="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_height="50dp">
-            <ImageView
-                android:id="@+id/img_left_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_token_eth"/>
-            <TextView
-                android:id="@+id/tv_left"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/small_margin"
-                android:text="ETH"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-            <ImageView
-                android:layout_width="@dimen/dp16"
-                android:layout_height="@dimen/dp16"
-                android:src="@drawable/ic_arrow_drop_down_black_12dp"
-                android:layout_marginLeft="@dimen/small_margin"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ll_deal_right"
-            android:layout_marginRight="@dimen/dp16"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:layout_alignParentRight="true">
-
-            <ImageView
-                android:id="@+id/img_right_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_token_eth"/>
-
-            <TextView
-                android:id="@+id/tv_right"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:layout_marginRight="@dimen/small_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:padding="@dimen/small_margin"
-                android:text="USDT"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:layout_width="@dimen/dp16"
-                android:layout_height="@dimen/dp16"
-                android:src="@drawable/ic_arrow_drop_down_black_12dp"/>
-        </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?actionBarSize"
+        android:background="@color/alabaster"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <RelativeLayout
-            android:id="@+id/rl_divided"
-            android:layout_below="@+id/ll_deal_right"
+            android:id="@+id/rl_root_deal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_margin"
+            android:padding="@dimen/big_margin"
+            android:background="@drawable/background_radius">
+
+            <LinearLayout
+                android:id="@+id/ll_deal_left"
+                android:layout_marginLeft="@dimen/dp16"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_height="50dp">
+                <ImageView
+                    android:id="@+id/img_left_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_token_eth"/>
+                <TextView
+                    android:id="@+id/tv_left"
+                    android:layout_marginLeft="@dimen/small_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_margin"
+                    android:text="ETH"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+                <ImageView
+                    android:layout_width="@dimen/dp16"
+                    android:layout_height="@dimen/dp16"
+                    android:src="@drawable/ic_arrow_drop_down_black_12dp"
+                    android:layout_marginLeft="@dimen/small_margin"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_deal_right"
+                android:layout_marginRight="@dimen/dp16"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="center_vertical"
+                android:layout_alignParentRight="true">
+
+                <ImageView
+                    android:id="@+id/img_right_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_token_eth"/>
+
+                <TextView
+                    android:id="@+id/tv_right"
+                    android:layout_marginLeft="@dimen/small_margin"
+                    android:layout_marginRight="@dimen/small_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:padding="@dimen/small_margin"
+                    android:text="USDT"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="@dimen/dp16"
+                    android:layout_height="@dimen/dp16"
+                    android:src="@drawable/ic_arrow_drop_down_black_12dp"/>
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/rl_divided"
+                android:layout_below="@+id/ll_deal_right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <View
+                    android:layout_centerVertical="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/greydd"/>
+                <ImageView
+                    android:id="@+id/img_exchange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_exchange"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/ll_root_input"
+                android:padding="@dimen/dp5"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:gravity="center_vertical"
+                android:layout_below="@+id/rl_divided">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/full_large_margin"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:visibility="invisible"
+                        android:id="@+id/ll_root_left_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="3">
+                        <ImageView
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="@dimen/dp20"
+                            android:layout_height="@dimen/dp20"
+                            android:src="@drawable/src_lib_eui_icon_profilewallet"/>
+                        <TextView
+                            android:id="@+id/tv_left_number"
+                            android:layout_marginLeft="@dimen/dp10"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/sp14"
+                            android:textColor="@color/grey75"
+                            android:text="0.0000"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="5">
+                        <EditText
+                            android:id="@+id/et_left"
+                            android:layout_marginLeft="@dimen/dp5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="转出数量"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/full_large_margin"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:visibility="invisible"
+                        android:id="@+id/ll_root_right_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="3">
+                        <ImageView
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="@dimen/dp20"
+                            android:layout_height="@dimen/dp20"
+                            android:src="@drawable/src_lib_eui_icon_profilewallet"/>
+                        <TextView
+                            android:id="@+id/tv_right_number"
+                            android:layout_marginLeft="@dimen/dp10"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/sp14"
+                            android:textColor="@color/grey75"
+                            android:text="0.0000"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="5">
+                        <EditText
+                            android:id="@+id/et_right"
+                            android:layout_marginLeft="@dimen/dp5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="收到数量"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
             <View
-                android:layout_centerVertical="true"
+                android:id="@+id/view_divided"
+                android:layout_below="@+id/ll_root_input"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/greydd"/>
-            <ImageView
-                android:id="@+id/img_exchange"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ll_desc"
+                android:layout_below="@+id/view_divided"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_exchange"/>
-        </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/ll_root_input"
-            android:padding="@dimen/dp5"
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:gravity="center_vertical"
-            android:layout_below="@+id/rl_divided">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="@dimen/full_large_margin"
-                android:layout_weight="1"
+                android:padding="12dp"
                 android:orientation="vertical">
                 <LinearLayout
-                    android:visibility="invisible"
-                    android:id="@+id/ll_root_left_number"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="3">
-                    <ImageView
-                        android:layout_gravity="center_vertical"
-                        android:layout_width="@dimen/dp20"
-                        android:layout_height="@dimen/dp20"
-                        android:src="@drawable/src_lib_eui_icon_profilewallet"/>
+                    android:layout_height="wrap_content">
                     <TextView
-                        android:id="@+id/tv_left_number"
-                        android:layout_marginLeft="@dimen/dp10"
-                        android:layout_gravity="center_vertical"
+                        android:textSize="@dimen/sp14"
+                        android:layout_marginRight="@dimen/dp20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="#767a90"
+                        android:text="汇率"/>
+                    <TextView
+                        android:id="@+id/tv_exchange_rate"
                         android:textSize="@dimen/sp14"
-                        android:textColor="@color/grey75"
-                        android:text="0.0000"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="5">
-                    <EditText
-                        android:id="@+id/et_left"
-                        android:layout_marginLeft="@dimen/dp5"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:hint="转出数量"/>
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="@dimen/full_large_margin"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:visibility="invisible"
-                    android:id="@+id/ll_root_right_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="3">
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="#434650"
+                        android:text="1 USDT = 0.00039018 ETH"/>
                     <ImageView
                         android:layout_gravity="center_vertical"
-                        android:layout_width="@dimen/dp20"
-                        android:layout_height="@dimen/dp20"
-                        android:src="@drawable/src_lib_eui_icon_profilewallet"/>
-                    <TextView
-                        android:id="@+id/tv_right_number"
-                        android:layout_marginLeft="@dimen/dp10"
-                        android:layout_gravity="center_vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp14"
-                        android:textColor="@color/grey75"
-                        android:text="0.0000"/>
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/item_artis_sigma1_circle"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="5">
-                    <EditText
-                        android:id="@+id/et_right"
-                        android:layout_marginLeft="@dimen/dp5"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        android:hint="收到数量"/>
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_marginRight="@dimen/dp20"
+                        android:textSize="@dimen/sp14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#767a90"
+                        android:text="手续费"/>
+                    <TextView
+                        android:textSize="@dimen/sp14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="#434650"
+                        android:text="0.3%"/>
                 </LinearLayout>
-
             </LinearLayout>
 
-        </LinearLayout>
-        <View
-            android:id="@+id/view_divided"
-            android:layout_below="@+id/ll_root_input"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/greydd"/>
-        <LinearLayout
-            android:id="@+id/ll_desc"
-            android:layout_below="@+id/view_divided"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:orientation="vertical">
             <LinearLayout
+                android:layout_below="@+id/ll_desc"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:textSize="@dimen/sp14"
-                    android:layout_marginRight="@dimen/dp20"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#767a90"
-                    android:text="汇率"/>
-                <TextView
-                    android:id="@+id/tv_exchange_rate"
-                    android:textSize="@dimen/sp14"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="#434650"
-                    android:text="1 USDT = 0.00039018 ETH"/>
+                android:layout_height="50dp">
                 <ImageView
+                    android:id="@+id/img_setting"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@drawable/item_artis_sigma1_circle"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_marginRight="@dimen/dp20"
-                    android:textSize="@dimen/sp14"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#767a90"
-                    android:text="手续费"/>
-                <TextView
-                    android:textSize="@dimen/sp14"
+                    android:src="@drawable/ic_setting"/>
+                <Button
+                    android:id="@+id/btn_exchange"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:textColor="#434650"
-                    android:text="0.3%"/>
+                    android:background="@drawable/btn_blue_radius"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:text="立即兑换"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_below="@+id/ll_desc"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
-            <ImageView
-                android:id="@+id/img_setting"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_setting"/>
-            <Button
-                android:id="@+id/btn_exchange"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/btn_blue_radius"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="15dp"
-                android:text="立即兑换"
-                android:textColor="@color/white"
-                android:textSize="16sp"/>
-        </LinearLayout>
 
 
-    </RelativeLayout>
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>
