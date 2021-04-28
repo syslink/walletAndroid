@@ -550,6 +550,14 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
         return eth;
     }
 
+    public static NetworkInfo getNetworkInfoByChainId(int chainId) {
+        for (NetworkInfo networkInfo : DEFAULT_NETWORKS)
+        {
+            if (networkInfo.chainId == chainId) return networkInfo;
+        }
+        return null;
+    }
+
     public Token getBlankOverrideToken()
     {
         return null;
