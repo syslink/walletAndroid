@@ -10,14 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <ImageView
-            android:id="@+id/img_icon"
+            android:id="@+id/src_token_icon"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_token_eth"/>
         <TextView
+            android:id="@+id/tv_token_name"
             android:layout_marginStart="@dimen/dp15"
-            android:layout_toRightOf="@+id/img_icon"
+            android:layout_toRightOf="@+id/src_token_icon"
             android:layout_marginLeft="@dimen/dp15"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"

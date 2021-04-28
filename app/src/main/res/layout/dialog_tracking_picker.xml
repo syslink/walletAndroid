@@ -57,7 +57,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/rv_command"/>
+                android:id="@+id/rv_header_list"/>
         </LinearLayout>
         <RelativeLayout
             android:layout_marginLeft="@dimen/dp10"
@@ -96,7 +96,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/rv_list"/>
+                android:id="@+id/rv_common_list"/>
         </LinearLayout>
 
     </LinearLayout>

@@ -1,6 +1,7 @@
 package com.alphawallet.app.ui.widget.holder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.entity.tokens.TokenTicker;
 import com.alphawallet.app.repository.EthereumNetworkRepository;
+import com.alphawallet.app.repository.SharedPreferenceRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmTokenTicker;
 import com.alphawallet.app.service.AssetDefinitionService;
@@ -26,6 +28,7 @@ import com.alphawallet.app.service.TickerService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.WalletFragment;
 import com.alphawallet.app.ui.widget.OnTokenClickListener;
+import com.alphawallet.app.util.CoinExchangeRateUtil;
 import com.alphawallet.app.widget.ChainName;
 import com.alphawallet.app.widget.TokenIcon;
 
@@ -74,12 +77,13 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
     private final TextView mItemType;
     private final TextView mCurrentHoldCurrency;
     private final TextView mCurrentHoldCurrencyExchange;
+    private final Context mContext;
 
     public TokenHolder(ViewGroup parent, AssetDefinitionService assetService, TokensService tSvs, Realm r)
     {
         super(R.layout.item_token, parent);
 
-
+        mContext = parent.getContext();
         tokenIcon = findViewById(R.id.token_icon);
         balanceEth = findViewById(R.id.eth_data);
         balanceCurrency = findViewById(R.id.balance_currency);
@@ -137,7 +141,7 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
             balanceEth.setText(nameValue);
             mItemType.setText(token.getSymbol());
             mCurrentHoldCurrency.setText(token.getStringBalance());
-            //can not get exchange rate
+
             mCurrentHoldCurrencyExchange.setText(data.getCny());
 
 

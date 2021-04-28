@@ -65,6 +65,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -106,7 +107,8 @@ public class WalletFragment extends BaseFragment implements
         OnTokenClickListener,
         View.OnClickListener,
         Runnable,
-        BackupTokenCallback {
+        BackupTokenCallback,
+        Observer {
     private static final String TAG = "WFRAG";
     private static final int TAB_ALL = 0;
     private static final int TAB_CURRENCY = 1;
@@ -133,7 +135,7 @@ public class WalletFragment extends BaseFragment implements
     private String realmId;
     private Map<String, String> mCoinAddressAndIdMap = new HashMap<>();
     private List<CoinInfoBean> mCoinInfoBeans;
-    private Map<String, String> mExchangeMap;
+    private boolean isUpdate = false;
 
 
     @Nullable
@@ -148,6 +150,7 @@ public class WalletFragment extends BaseFragment implements
         } else {
             toolbar(view);
         }
+        CoinExchangeRateUtil.getInstance().addObserver(this);
 
         initViews(view);
         initCoinIdList();
@@ -422,15 +425,22 @@ public class WalletFragment extends BaseFragment implements
                     String name = token.getTokenTitle().split(" ")[0].toUpperCase();
                     String symbol = token.getSymbol();
                     String address = token.getAddress();
-                    String coinIdByNameAndSymbol = getCoinIdByNameAndSymbol(name, symbol);
-                    if (!coinIdByNameAndSymbol.isEmpty()){
-                        mCoinAddressAndIdMap.put(address, coinIdByNameAndSymbol);
+                    String coinId = getCoinIdByNameAndSymbol(name, symbol);
+                    if (!coinId.isEmpty()){
+                        if (!mCoinAddressAndIdMap.values().contains(coinId)){
+                            isUpdate = true;
+                            mCoinAddressAndIdMap.put(address, coinId);
+                        }
+
                     }
                 }
-                CoinExchangeRateUtil.getInstance()
-                        .setCoinIds(mCoinAddressAndIdMap)
-                        .setOkhttpClient(mOkHttpClient)
-                        .CheckExchangeRate();
+                if (isUpdate){
+                    CoinExchangeRateUtil.getInstance()
+                            .setCoinIds(mCoinAddressAndIdMap)
+                            .setOkhttpClient(mOkHttpClient)
+                            .CheckExchangeRate();
+                    isUpdate = false;
+                }
                 //getExchangeRateByCoinId();
             }
             adapter.setTokens(tokens);
@@ -532,6 +542,7 @@ public class WalletFragment extends BaseFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        CoinExchangeRateUtil.getInstance().deleteObserver(this);
         //viewModel.clearProcess();
         if (realmUpdates != null) realmUpdates.removeAllChangeListeners();
         if (realm != null && !realm.isClosed()) realm.close();
@@ -614,6 +625,12 @@ public class WalletFragment extends BaseFragment implements
         importFileName = fName;
     }
 
+    @Override
+    public void update(java.util.Observable o, Object arg) {
+        if (adapter != null){
+            Log.d(TAG, "update: 更新视图");
+        }
+    }
 
 
     public class SwipeCallback extends ItemTouchHelper.SimpleCallback {

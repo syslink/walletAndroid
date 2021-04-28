@@ -1,6 +1,5 @@
 package com.alphawallet.app.ui;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -21,12 +20,16 @@ import com.alphawallet.app.entity.ContractLocator;
 import com.alphawallet.app.entity.EventMeta;
 import com.alphawallet.app.entity.TransactionMeta;
 import com.alphawallet.app.entity.Wallet;
+import com.alphawallet.app.repository.SharedPreferenceRepository;
 import com.alphawallet.app.repository.entity.RealmAuxData;
 import com.alphawallet.app.repository.entity.RealmTransaction;
 import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.alphawallet.app.viewmodel.ActivityViewModelFactory;
-import com.alphawallet.app.viewmodel.DealPageInfo;
+import com.alphawallet.app.viewmodel.DealPageItemBean;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,14 +42,10 @@ import androidx.lifecycle.ViewModelProvider;
 import org.jetbrains.annotations.NotNull;
 
 import dagger.android.support.AndroidSupportInjection;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -55,7 +54,7 @@ import static com.alphawallet.app.repository.TokensRealmSource.EVENT_CARDS;
 /**
  * Created by JB on 26/06/2020.
  */
-public class ActivityFragment extends BaseFragment implements View.OnClickListener {
+public class ActivityFragment extends BaseFragment implements View.OnClickListener, Callback {
     @Inject
     ActivityViewModelFactory activityViewModelFactory;
     private static final String TAG = "ActivityFragment";
@@ -71,6 +70,20 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     private String realmId;
     private RealmResults<RealmTransaction> realmUpdates;
     private RealmResults<RealmAuxData> auxRealmUpdates;
+    public static final String BSC_TYPE = "56";
+    public static final String BSC_ICON_BASE_URL = "https://exchange.pancakeswap.finance/images/coins/";
+    public static final String HECO_ICON_BASE_URL = "https://mdex.com/token-icons/heco/";
+    //56 -->bsc   128-->heco
+    private String mNetworkFilter;
+    private List<DealPageItemBean> mHecoHeaderList;
+    private List<DealPageItemBean> mHecoComList;
+    private List<DealPageItemBean> mBscHeaderList;
+    private List<DealPageItemBean> mBscComList;
+
+    private List<DealPageItemBean> mCurrentHeadList;
+    private List<DealPageItemBean> mCurrentComList;
+    private boolean mIsBsc;
+    private TextView mExchangeRateText;
 
     @Nullable
     @Override
@@ -85,26 +98,50 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         return view;
     }
 
-    @SuppressLint("CheckResult")
-    private void initDealList() {
-        Observable.create(getResponseObservableOnSubscribe())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    String string = response.body().string();
-                    Log.d(TAG, "accept: 返回数据："+ string);
-                    DealPageInfo dealPageInfo = JSONObject.parseObject(string, DealPageInfo.class);
-                });
+    private void setData() {
+        //heco取HT和HUSD，bsc取BNB和BUSD
+        String leftIconUrl;
+        String rightIconUrl;
+        DealPageItemBean leftInfoBean;
+        DealPageItemBean rightInfoBean;
+        if (mIsBsc) {
+            leftInfoBean = mBscHeaderList.get(0);
+            rightInfoBean = mBscHeaderList.get(1);
+            leftIconUrl = BSC_ICON_BASE_URL + leftInfoBean.getAddress() + ".png";
+            rightIconUrl = BSC_ICON_BASE_URL + rightInfoBean.getAddress() + ".png";
+        } else {
+            leftInfoBean = mHecoHeaderList.get(0);
+            rightInfoBean = mHecoHeaderList.get(1);
+            leftIconUrl = HECO_ICON_BASE_URL + leftInfoBean.getAddress() + ".png";
+            rightIconUrl = HECO_ICON_BASE_URL + rightInfoBean.getAddress() + ".png";
+        }
+//        Log.d(TAG, "setData: leftIconUrl = " + leftIconUrl);
+//        Log.d(TAG, "setData: rightIconUrl = " + rightIconUrl);
+
+        Glide.with(getContext()).load(leftIconUrl)
+                .apply(new RequestOptions().circleCrop())
+                .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
+                .into(mLeftIcon);
+
+        Glide.with(getContext()).load(rightIconUrl)
+                .apply(new RequestOptions().circleCrop())
+                .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
+                .into(mRightIcon);
+        mLeftTextView.setText(leftInfoBean.getName().toUpperCase());
+        mRightTextView.setText(rightInfoBean.getName().toUpperCase());
+
+        //1 USDT = 0.00039018 ETH
+        String rate = "0.00039018";//TODO  待计算
+        String exchangeRate = "1 " + leftInfoBean.getName().toUpperCase() +
+                " = " + rate + " " + rightInfoBean.getName().toUpperCase();
+        mExchangeRateText.setText(exchangeRate);
     }
 
-    @NotNull
-    private ObservableOnSubscribe<Response> getResponseObservableOnSubscribe() {
-        return emitter -> {
-            Request request = new Request.Builder()
-                    .url("https://doulaig.oss-cn-hangzhou.aliyuncs.com/wallet/swapableTokenList.json")
-                    .build();
-            emitter.onNext(mOkHttpClient.newCall(request).execute());
-        };
+    private void initDealList() {
+        Request request = new Request.Builder()
+                .url("https://doulaig.oss-cn-hangzhou.aliyuncs.com/wallet/swapableTokenList.json")
+                .build();
+        mOkHttpClient.newCall(request).enqueue(this);
     }
 
     private void initViewModel() {
@@ -128,20 +165,18 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         //showEmptyTx();
         long lastUpdateTime = 0;
 
-        for (ActivityMeta am : activityItems)
-        {
-            if (am instanceof TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime) lastUpdateTime = am.getTimeStampSeconds();
+        for (ActivityMeta am : activityItems) {
+            if (am instanceof TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime)
+                lastUpdateTime = am.getTimeStampSeconds();
         }
 
-        startTxListener(lastUpdateTime - 60*10); //adjust for timestamp delay
+        startTxListener(lastUpdateTime - 60 * 10); //adjust for timestamp delay
     }
 
-    private void startTxListener(long lastUpdateTime)
-    {
+    private void startTxListener(long lastUpdateTime) {
         String walletAddress = viewModel.defaultWallet().getValue() != null ? viewModel.defaultWallet().getValue().address : "";
         eventTimeFilter = lastUpdateTime;
-        if (realmId == null || !realmId.equalsIgnoreCase(walletAddress))
-        {
+        if (realmId == null || !realmId.equalsIgnoreCase(walletAddress)) {
             if (realmUpdates != null) realmUpdates.removeAllChangeListeners();
 
             realmId = walletAddress;
@@ -151,17 +186,14 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 List<TransactionMeta> metas = new ArrayList<>();
                 //make list
                 if (realmTransactions.size() == 0) return;
-                for (RealmTransaction item : realmTransactions)
-                {
-                    if (viewModel.getTokensService().getNetworkFilters().contains(item.getChainId()))
-                    {
+                for (RealmTransaction item : realmTransactions) {
+                    if (viewModel.getTokensService().getNetworkFilters().contains(item.getChainId())) {
                         TransactionMeta newMeta = new TransactionMeta(item.getHash(), item.getTimeStamp(), item.getTo(), item.getChainId(), item.getBlockNumber());
                         metas.add(newMeta);
                     }
                 }
 
-                if (metas.size() > 0)
-                {
+                if (metas.size() > 0) {
                     TransactionMeta[] metaArray = metas.toArray(new TransactionMeta[0]);
                     //adapter.updateActivityItems(buildTransactionList(metaArray).toArray(new ActivityMeta[0]));
                     //systemView.hide();
@@ -175,10 +207,8 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             auxRealmUpdates.addChangeListener(realmEvents -> {
                 List<ActivityMeta> metas = new ArrayList<>();
                 if (realmEvents.size() == 0) return;
-                for (RealmAuxData item : realmEvents)
-                {
-                    if (item.getResultReceivedTime() >= eventTimeFilter && viewModel.getTokensService().getNetworkFilters().contains(item.getChainId()))
-                    {
+                for (RealmAuxData item : realmEvents) {
+                    if (item.getResultReceivedTime() >= eventTimeFilter && viewModel.getTokensService().getNetworkFilters().contains(item.getChainId())) {
                         EventMeta newMeta = new EventMeta(item.getTransactionHash(), item.getEventName(), item.getFunctionId(), item.getResultTime(), item.getChainId());
                         metas.add(newMeta);
                     }
@@ -186,8 +216,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
                 eventTimeFilter = System.currentTimeMillis() - DateUtils.SECOND_IN_MILLIS; // allow for async; may receive many event updates
 
-                if (metas.size() > 0)
-                {
+                if (metas.size() > 0) {
                     //adapter.updateActivityItems(metas.toArray(new ActivityMeta[0]));
                     //systemView.hide();
                 }
@@ -211,12 +240,25 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         TextView rightOutNumber = view.findViewById(R.id.tv_right_number);
         EditText leftEditText = view.findViewById(R.id.et_left);
         EditText rightEditText = view.findViewById(R.id.et_right);
-        TextView exchangeRateText = view.findViewById(R.id.tv_exchange_rate);
+        mExchangeRateText = view.findViewById(R.id.tv_exchange_rate);
         ImageView settingImage = view.findViewById(R.id.img_setting);
         settingImage.setOnClickListener(this);
         Button exchangeBtn = view.findViewById(R.id.btn_exchange);
         exchangeBtn.setOnClickListener(this);
 
+    }
+
+    private void initData() {
+        if (mNetworkFilter.equals("56")) {
+            //bsc
+            mCurrentHeadList = mBscHeaderList;
+            mCurrentComList = mBscComList;
+        } else {
+            //heco
+            mCurrentHeadList = mHecoHeaderList;
+            mCurrentComList = mHecoComList;
+        }
+        setData();
     }
 
     @Override
@@ -243,7 +285,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void showCurrencyListDialog() {
-        PickDialog dialog = new PickDialog();
+        PickDialog dialog = new PickDialog(mCurrentHeadList, mCurrentComList, mNetworkFilter);
         dialog.showNow(getActivity().getSupportFragmentManager(), "test");
     }
 
@@ -256,6 +298,32 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     }
 
     public void resetTransactions() {
+
+    }
+
+    void onShow() {
+        SharedPreferenceRepository repository = new SharedPreferenceRepository(getContext());
+        mNetworkFilter = repository.getNetworkFilterList();
+        mIsBsc = mNetworkFilter.equals(BSC_TYPE);
+        initData();
+    }
+
+    @Override
+    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+    }
+
+    @Override
+    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+        String string = response.body().string();
+        JSONObject jsonObject = JSONObject.parseObject(string);
+        JSONObject hecoObj = JSONObject.parseObject(jsonObject.getString("heco"));
+        mHecoHeaderList = JSON.parseArray(hecoObj.getString("headList"), DealPageItemBean.class);
+        mHecoComList = JSON.parseArray(hecoObj.getString("commonList"), DealPageItemBean.class);
+
+        JSONObject bscObj = JSONObject.parseObject(jsonObject.getString("bsc"));
+        mBscHeaderList = JSON.parseArray(bscObj.getString("headList"), DealPageItemBean.class);
+        mBscComList = JSON.parseArray(bscObj.getString("commonList"), DealPageItemBean.class);
 
     }
 }

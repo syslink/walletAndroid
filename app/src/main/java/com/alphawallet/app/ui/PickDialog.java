@@ -1,21 +1,24 @@
 package com.alphawallet.app.ui;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.alphawallet.app.R;
+import com.alphawallet.app.viewmodel.DealPageItemBean;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -24,7 +27,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class PickDialog extends DialogFragment implements View.OnClickListener{
+    private static final String TAG = "PickDialog";
     private LinearLayoutManager mRecyclerViewLayoutManager;
+    private List<DealPageItemBean> mHeaderList;
+    private List<DealPageItemBean> mComList;
+    private String netWortFilter;
+
+    public PickDialog(List<DealPageItemBean> headerList, List<DealPageItemBean> comList, String networkFilter) {
+        mHeaderList = headerList;
+        mComList = comList;
+        this.netWortFilter = networkFilter;
+    }
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,27 +70,25 @@ public class PickDialog extends DialogFragment implements View.OnClickListener{
     }
 
     public void initViews(View view) {
-        RecyclerView commandRecycleView = view.findViewById(R.id.rv_command);
-        RecyclerView listRecycleView = view.findViewById(R.id.rv_list);
+        RecyclerView headerRecycleView = view.findViewById(R.id.rv_header_list);
+        RecyclerView commonRecycleView = view.findViewById(R.id.rv_common_list);
         view.findViewById(R.id.tv_cancel).setOnClickListener(this);
         mRecyclerViewLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerViewLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        commandRecycleView.setLayoutManager(mRecyclerViewLayoutManager);
+        headerRecycleView.setLayoutManager(mRecyclerViewLayoutManager);
         LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(getContext());
         verticalLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        listRecycleView.setLayoutManager(verticalLayoutManager);
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add("ETH");
-        }
+        commonRecycleView.setLayoutManager(verticalLayoutManager);
 
-        MyAdapter adapter = new MyAdapter(R.layout.item_layout_v,list);
-        commandRecycleView.setAdapter(adapter);
+        MyAdapter adapter = new MyAdapter(R.layout.item_layout_v,mHeaderList);
+        headerRecycleView.setAdapter(adapter);
 
-        MyAdapter myAdapter = new MyAdapter(R.layout.item_layout, list);
-        listRecycleView.addItemDecoration(new MyItemDecoration());
-        listRecycleView.setAdapter(myAdapter);
+        MyAdapter myAdapter = new MyAdapter(R.layout.item_layout, mComList);
+        commonRecycleView.setAdapter(myAdapter);
 
+    }
+    private String getNetWortFilter(){
+        return this.netWortFilter;
     }
 
     @Override
@@ -85,30 +96,31 @@ public class PickDialog extends DialogFragment implements View.OnClickListener{
         dismiss();
     }
 
-    public class MyAdapter extends BaseQuickAdapter<String,BaseViewHolder>{
+    public class MyAdapter extends BaseQuickAdapter<DealPageItemBean,BaseViewHolder>{
 
 
-        public MyAdapter(int layoutResId, @org.jetbrains.annotations.Nullable List<String> data) {
+        public MyAdapter(int layoutResId, @org.jetbrains.annotations.Nullable List<DealPageItemBean> data) {
             super(layoutResId, data);
         }
 
         @Override
-        protected void convert(@NotNull BaseViewHolder helper, String s) {
+        protected void convert(@NotNull BaseViewHolder helper, DealPageItemBean item) {
+            helper.setText(R.id.tv_token_name, item.getName());
+            ImageView view = helper.findView(R.id.src_token_icon);
+            String url;
+            if (getNetWortFilter().equals("56")) {
+                //bsc
+                url = ActivityFragment.BSC_ICON_BASE_URL + item.getAddress() + ".png";
+            }else {
+                //heco
+                url = ActivityFragment.HECO_ICON_BASE_URL + item.getAddress() + ".png";
+            }
+//            Log.d(TAG, "convert: url = " + url);
+            Glide.with(getContext()).load(url)
+                    .apply(new RequestOptions().circleCrop())
+                    .apply(new RequestOptions().placeholder(R.drawable.ic_token_eth))
+                    .into(view);
         }
-    }
 
-    class MyItemDecoration extends RecyclerView.ItemDecoration {
-        /**
-         *
-         * @param outRect 边界
-         * @param view recyclerView ItemView
-         * @param parent recyclerView
-         * @param state recycler 内部数据管理
-         */
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            //设定底部边距为1px
-            outRect.set(30, 0, 30, 1);
-        }
     }
 }

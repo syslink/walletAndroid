@@ -564,6 +564,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             }
             case ACTIVITY:
             {
+                ((ActivityFragment) activityFragment).onShow();
                 showToolbar();
                 viewPager.setCurrentItem(ACTIVITY.ordinal());
                 setTitle(getString(R.string.activity_label));

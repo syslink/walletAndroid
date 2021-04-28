@@ -264,9 +264,9 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
                 if (" ~ ".equals(exchangeRate)) {
                     token.setCny(exchangeRate);
                 } else {
-                    token.setCny(exchangeRate.equals("USD") ? "$ " : "¥ " + exchangeRate);
+                    token.setCny(currency.equals("USD") ? "$ " : "¥ " + exchangeRate);
                 }
-
+                //Log.d(TAG, "updateToken: 汇率："+token.getCny());
                 TokenSortedItem tsi = new TokenSortedItem(TokenHolder.VIEW_TYPE, token, token.nameWeight);
                 if (debugView) tsi.debug();
                 position = items.add(tsi);
