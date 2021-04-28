@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.Nullable;
 
+import com.alphawallet.app.repository.SharedPreferenceRepository;
 import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -68,7 +69,7 @@ public class WalletsActivity extends BaseActivity implements
 
     private boolean requiresHomeRefresh;
     private String dialogError;
-    private final int balanceChain = EthereumNetworkRepository.getOverrideToken().chainId;
+    private int balanceChain = EthereumNetworkRepository.getOverrideToken().chainId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class WalletsActivity extends BaseActivity implements
         toolbar();
         setTitle(getString(R.string.title_change_add_wallet));
         requiresHomeRefresh = false;
+        balanceChain = Integer.parseInt(new SharedPreferenceRepository(this).getNetworkFilterList());
     }
 
     @Override
