@@ -173,9 +173,9 @@ public class WalletFragment extends BaseFragment implements
     @SuppressLint("CheckResult")
     private void initCoinIdList() {
         SharedPreferences coinList = getContext().getSharedPreferences("coinList", Context.MODE_PRIVATE);
-        if (!coinList.getString("list_coin","").isEmpty()){
-            mCoinInfoBeans = JSONObject.parseArray(coinList.getString("list_coin",""), CoinInfoBean.class);
-        }else {
+        if (!coinList.getString("list_coin", "").isEmpty()) {
+            mCoinInfoBeans = JSONObject.parseArray(coinList.getString("list_coin", ""), CoinInfoBean.class);
+        } else {
             Observable.create(new ObservableOnSubscribe<Response>() {
                 @Override
                 public void subscribe(ObservableEmitter<Response> emitter) throws Exception {
@@ -202,7 +202,7 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void initList() {
-        adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(), getContext(),this);
+        adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(), getContext(), this);
         adapter.setHasStableIds(true);
         setLinearLayoutManager(TAB_ALL);
         recyclerView.setAdapter(adapter);
@@ -245,8 +245,10 @@ public class WalletFragment extends BaseFragment implements
             adapter.setWalletAddress(wallet.address);
         }
 
-        addressBlockie.setImageBitmap(Blockies.createIcon(wallet.address.toLowerCase()));
+        addressBlockie.setImageResource(R.drawable.logo);
+        //addressBlockie.setImageBitmap(Blockies.createIcon(wallet.address.toLowerCase()));
         addressBlockie.setVisibility(View.VISIBLE);
+        addressBlockie.setOnClickListener(this);
 
         //Do we display new user backup popup?
         ((HomeActivity) getActivity()).showBackupWalletDialog(wallet.lastBackupTime > 0);
@@ -418,7 +420,7 @@ public class WalletFragment extends BaseFragment implements
 
     private void onTokens(TokenCardMeta[] tokens) {
         if (tokens != null) {
-            if (mCoinInfoBeans != null){
+            if (mCoinInfoBeans != null) {
                 TokensService tokensService = viewModel.getTokensService();
                 for (TokenCardMeta item : tokens) {
                     Token token = tokensService.getToken(item.getChain(), item.getAddress());
@@ -426,15 +428,15 @@ public class WalletFragment extends BaseFragment implements
                     String symbol = token.getSymbol();
                     String address = token.getAddress();
                     String coinId = getCoinIdByNameAndSymbol(name, symbol);
-                    if (!coinId.isEmpty()){
-                        if (!mCoinAddressAndIdMap.values().contains(coinId)){
+                    if (!coinId.isEmpty()) {
+                        if (!mCoinAddressAndIdMap.values().contains(coinId)) {
                             isUpdate = true;
                             mCoinAddressAndIdMap.put(address, coinId);
                         }
 
                     }
                 }
-                if (isUpdate){
+                if (isUpdate) {
                     CoinExchangeRateUtil.getInstance()
                             .setCoinIds(mCoinAddressAndIdMap)
                             .setOkhttpClient(mOkHttpClient)
@@ -451,13 +453,12 @@ public class WalletFragment extends BaseFragment implements
     }
 
 
-
     private String getCoinIdByNameAndSymbol(String name, String symbol) {
         String id = "";
-        if (mCoinInfoBeans != null && mCoinInfoBeans.size() > 0){
+        if (mCoinInfoBeans != null && mCoinInfoBeans.size() > 0) {
             for (int i = 0; i < mCoinInfoBeans.size(); i++) {
                 CoinInfoBean bean = mCoinInfoBeans.get(i);
-                if (bean.getName().equalsIgnoreCase(name) && bean.getSymbol().equalsIgnoreCase(symbol)){
+                if (bean.getName().equalsIgnoreCase(name) && bean.getSymbol().equalsIgnoreCase(symbol)) {
                     id = bean.getId();
                     break;
                 }
@@ -532,10 +533,14 @@ public class WalletFragment extends BaseFragment implements
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.try_again: {
+            case R.id.try_again:
                 viewModel.prepare();
-            }
-            break;
+                break;
+            case R.id.user_address_blockie:
+                Intent intent = new Intent(getActivity(), SelectNetworkActivity.class);
+                intent.putExtra(C.EXTRA_SINGLE_ITEM, false);
+                getActivity().startActivity(intent);
+                break;
         }
     }
 
@@ -627,7 +632,7 @@ public class WalletFragment extends BaseFragment implements
 
     @Override
     public void update(java.util.Observable o, Object arg) {
-        if (adapter != null){
+        if (adapter != null) {
             Log.d(TAG, "update: 更新视图");
         }
     }
