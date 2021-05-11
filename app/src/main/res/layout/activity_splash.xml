@@ -17,7 +17,7 @@
             android:id="@+id/splash_image"
             android:layout_width="217dp"
             android:layout_height="187dp"
-            android:background="@drawable/ic_alpha"
+            android:background="@drawable/logo"
             android:gravity="center_horizontal" />
 
         <TextView

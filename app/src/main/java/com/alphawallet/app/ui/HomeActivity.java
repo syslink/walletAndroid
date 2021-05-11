@@ -528,7 +528,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             case DAPP_BROWSER:
             {
                 hideToolbar();
-                viewPager.setCurrentItem(DAPP_BROWSER.ordinal());
+                viewPager.setCurrentItem(DAPP_BROWSER.ordinal(),false);
                 setTitle(getString(R.string.toolbar_header_browser));
                 selectNavigationItem(DAPP_BROWSER);
                 enableDisplayHomeAsHome(true);
@@ -538,7 +538,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             case WALLET:
             {
                 showToolbar();
-                viewPager.setCurrentItem(WALLET.ordinal());
+                viewPager.setCurrentItem(WALLET.ordinal(),false);
                 if (walletTitle == null || walletTitle.isEmpty())
                 {
                     setTitle(getString(R.string.toolbar_header_wallet));
@@ -555,7 +555,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             case SETTINGS:
             {
                 showToolbar();
-                viewPager.setCurrentItem(SETTINGS.ordinal());
+                viewPager.setCurrentItem(SETTINGS.ordinal(),false);
                 setTitle(getString(R.string.toolbar_header_settings));
                 selectNavigationItem(SETTINGS);
                 enableDisplayHomeAsHome(false);
@@ -566,7 +566,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             {
                 ((ActivityFragment) activityFragment).onShow();
                 showToolbar();
-                viewPager.setCurrentItem(ACTIVITY.ordinal());
+                viewPager.setCurrentItem(ACTIVITY.ordinal(),false);
                 setTitle(getString(R.string.activity_label));
                 selectNavigationItem(ACTIVITY);
                 enableDisplayHomeAsHome(false);
